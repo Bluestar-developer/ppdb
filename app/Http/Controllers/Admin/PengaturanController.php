@@ -16,7 +16,7 @@ class PengaturanController extends Controller
         $keys = [
             'nama_sekolah', 'logo', 'favicon', 'banner_home', 'warna_tema',
             'info_ppdb', 'alamat', 'kontak', 'email', 'whatsapp',
-            'instagram', 'facebook', 'youtube', 'sejarah', 'visi_misi'
+            'instagram', 'facebook', 'youtube', 'sejarah', 'visi', 'misi', 'website'
         ];
         
         foreach ($keys as $key) {
@@ -36,11 +36,13 @@ class PengaturanController extends Controller
             'kontak'       => 'nullable|string|max:50',
             'email'        => 'nullable|email|max:100',
             'whatsapp'     => 'nullable|string|max:20',
-            'instagram'    => 'nullable|string|max:100',
-            'facebook'     => 'nullable|string|max:100',
-            'youtube'      => 'nullable|string|max:100',
+            'website'      => 'nullable|url|max:255',
+            'instagram'    => 'nullable|url|max:255',
+            'facebook'     => 'nullable|url|max:255',
+            'youtube'      => 'nullable|url|max:255',
             'sejarah'      => 'nullable|string',
-            'visi_misi'    => 'nullable|string',
+            'visi'         => 'nullable|string',
+            'misi'         => 'nullable|string',
             // Gunakan array syntax agar '|' di dalam regex tidak dianggap pemisah rule
             'warna_tema'   => ['nullable', 'string', 'regex:/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/'],
             'logo'         => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
@@ -51,8 +53,8 @@ class PengaturanController extends Controller
 
         // Update atau buat data text
         $textFields = [
-            'nama_sekolah', 'info_ppdb', 'alamat', 'kontak', 'email', 'whatsapp',
-            'instagram', 'facebook', 'youtube', 'sejarah', 'visi_misi', 'warna_tema'
+            'nama_sekolah', 'info_ppdb', 'alamat', 'kontak', 'email', 'whatsapp', 'website',
+            'instagram', 'facebook', 'youtube', 'sejarah', 'visi', 'misi', 'warna_tema'
         ];
         
         foreach ($textFields as $field) {

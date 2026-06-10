@@ -58,16 +58,16 @@
                 </h3>
                 <div class="grid md:grid-cols-3 gap-5">
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Instagram</label>
-                        <input type="text" name="instagram" value="{{ $pengaturan['instagram'] ?? '' }}" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-400 transition shadow-sm" placeholder="username">
+                        <label class="block text-sm font-semibold text-gray-700 mb-1"><i class="fab fa-instagram text-pink-500 mr-1"></i> Instagram</label>
+                        <input type="url" name="instagram" value="{{ $pengaturan['instagram'] ?? '' }}" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-400 transition shadow-sm" placeholder="https://instagram.com/username">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Facebook</label>
-                        <input type="text" name="facebook" value="{{ $pengaturan['facebook'] ?? '' }}" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-400 transition shadow-sm" placeholder="username">
+                        <label class="block text-sm font-semibold text-gray-700 mb-1"><i class="fab fa-facebook text-blue-600 mr-1"></i> Facebook</label>
+                        <input type="url" name="facebook" value="{{ $pengaturan['facebook'] ?? '' }}" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-400 transition shadow-sm" placeholder="https://facebook.com/pagename">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">YouTube</label>
-                        <input type="text" name="youtube" value="{{ $pengaturan['youtube'] ?? '' }}" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-400 transition shadow-sm" placeholder="channel ID">
+                        <label class="block text-sm font-semibold text-gray-700 mb-1"><i class="fab fa-youtube text-red-500 mr-1"></i> YouTube</label>
+                        <input type="url" name="youtube" value="{{ $pengaturan['youtube'] ?? '' }}" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-400 transition shadow-sm" placeholder="https://youtube.com/@channel">
                     </div>
                 </div>
             </div>
@@ -99,9 +99,16 @@
                         <label class="block text-sm font-semibold text-gray-700 mb-1">Sejarah Sekolah</label>
                         <textarea name="sejarah" rows="4" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-400 transition shadow-sm">{{ $pengaturan['sejarah'] ?? '' }}</textarea>
                     </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Visi & Misi</label>
-                        <textarea name="visi_misi" rows="5" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-400 transition shadow-sm">{{ $pengaturan['visi_misi'] ?? '' }}</textarea>
+                    <div class="grid md:grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1"><i class="fas fa-bullseye text-blue-500 mr-1"></i> Visi Sekolah</label>
+                            <textarea name="visi" rows="4" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-400 transition shadow-sm" placeholder="Masukkan pernyataan Visi sekolah...">{{ $pengaturan['visi'] ?? '' }}</textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1"><i class="fas fa-list-check text-cyan-500 mr-1"></i> Misi Sekolah</label>
+                            <textarea name="misi" rows="4" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-400 transition shadow-sm" placeholder="Masukkan poin-poin Misi sekolah (satu per baris)...">{{ $pengaturan['misi'] ?? '' }}</textarea>
+                            <p class="text-xs text-gray-400 mt-1"><i class="fas fa-info-circle"></i> Tulis setiap poin misi dalam baris baru untuk tampil sebagai daftar.</p>
+                        </div>
                     </div>
                 </div>
             </div>

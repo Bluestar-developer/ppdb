@@ -11,6 +11,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
+        :root {
+            --color-primary: {{ $pengaturan['warna_tema'] ?? '#2563eb' }};
+        }
         * { font-family: 'Inter', sans-serif; }
         body { background-color: #f8fafc; }
         .card-modern {
@@ -24,15 +27,14 @@
             box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.1);
         }
         .btn-gradient {
-            background: linear-gradient(105deg, #3b82f6 0%, #2563eb 100%);
-            box-shadow: 0 8px 20px -6px #3b82f650;
+            background: linear-gradient(105deg, var(--color-primary) 0%, color-mix(in srgb, var(--color-primary) 80%, black) 100%);
+            box-shadow: 0 8px 20px -6px color-mix(in srgb, var(--color-primary) 50%, transparent);
         }
         .btn-gradient:hover {
             transform: scale(1.02);
-            box-shadow: 0 12px 25px -8px #3b82f680;
         }
         .text-gradient-primary {
-            background: linear-gradient(135deg, #3b82f6, #06b6d4);
+            background: linear-gradient(135deg, var(--color-primary), #06b6d4);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -42,17 +44,80 @@
             transition: 0.2s;
         }
         .tab-light.active {
-            border-bottom-color: #3b82f6;
-            color: #3b82f6;
+            border-bottom-color: var(--color-primary);
+            color: var(--color-primary);
         }
         .hero-bg {
             background: linear-gradient(135deg, #eff6ff 0%, #ffffff 50%, #f0f9ff 100%);
+        }
+        /* Premium Announcement Ticker */
+        .ticker-section {
+            background: linear-gradient(90deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        .ticker-section::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 80px;
+            background: linear-gradient(90deg, #0f172a, transparent);
+            z-index: 2;
+        }
+        .ticker-section::after {
+            content: '';
+            position: absolute;
+            right: 0; top: 0; bottom: 0;
+            width: 80px;
+            background: linear-gradient(-90deg, #0f172a, transparent);
+            z-index: 2;
+        }
+        .ticker-label {
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            display: flex;
+            align-items: center;
+            padding: 0 1.25rem;
+            background: var(--color-primary);
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: white;
+            z-index: 10;
+            clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 0 100%);
+        }
+        .ticker-track {
+            display: flex;
+            animation: ticker 35s linear infinite;
+            padding-left: 100%;
+            white-space: nowrap;
+        }
+        .ticker-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0 2.5rem;
+            color: #cbd5e1;
+            font-size: 0.82rem;
+            letter-spacing: 0.02em;
+        }
+        .ticker-item .dot {
+            width: 4px; height: 4px;
+            border-radius: 50%;
+            background: var(--color-primary);
+            flex-shrink: 0;
+        }
+        @keyframes ticker {
+            0%   { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
         }
     </style>
 </head>
 <body class="antialiased">
 
-    <!-- ========== NAVBAR LIGHT ========== -->
     <nav class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-200 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
@@ -122,7 +187,11 @@
                 </div>
                 <div class="relative">
                     <div class="rounded-2xl overflow-hidden shadow-2xl">
-                        <img src="https://picsum.photos/id/48/600/400" alt="Hero" class="w-full h-auto object-cover">
+                        @if(isset($pengaturan['banner_home']) && $pengaturan['banner_home'] && Storage::disk('public')->exists($pengaturan['banner_home']))
+                            <img src="{{ Storage::url($pengaturan['banner_home']) }}" alt="Banner" class="w-full h-auto object-cover">
+                        @else
+                            <img src="https://picsum.photos/id/48/600/400" alt="Hero" class="w-full h-auto object-cover">
+                        @endif
                     </div>
                     <div class="absolute -bottom-5 -left-5 bg-white rounded-xl shadow-lg p-3 border border-gray-100">
                         <i class="fas fa-quote-left text-blue-400 text-xl"></i>
@@ -139,15 +208,28 @@
         </div>
     </section>
 
-    <!-- ========== TAB NAVIGASI ========== -->
-    <div class="sticky top-16 bg-white border-b border-gray-200 z-40 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="flex space-x-6 md:space-x-12 overflow-x-auto py-3 text-sm font-semibold">
-                <a href="#profil" class="tab-light active text-blue-600">Profil Sekolah</a>
-                <a href="#jurusan" class="tab-light text-gray-600 hover:text-blue-600">Jurusan</a>
-                <a href="#alur" class="tab-light text-gray-600 hover:text-blue-600">Alur Pendaftaran</a>
-                <a href="#info" class="tab-light text-gray-600 hover:text-blue-600">Info & Jadwal</a>
-                <a href="#galeri" class="tab-light text-gray-600 hover:text-blue-600">Galeri</a>
+    <!-- ========== PREMIUM ANNOUNCEMENT TICKER ========== -->
+    <div class="ticker-section py-3">
+        <div class="ticker-label">&#x1F4E3; INFO</div>
+        <div class="overflow-hidden ml-24">
+            <div class="ticker-track">
+                @php
+                    $infoPpdb = $pengaturan['info_ppdb'] ?? 'Pendaftaran PPDB 2025/2026 Resmi Dibuka — Daftar Sekarang dan Raih Masa Depanmu!';
+                    // Repeat for seamless loop
+                    $items = [
+                        $infoPpdb,
+                        'Pendaftaran online mudah, cepat, dan transparan',
+                        ($pengaturan['nama_sekolah'] ?? 'SMK ICB Cinta Teknika') . ' — Akreditasi A (Unggul)',
+                        count($jurusan) . ' Jurusan Unggulan Tersedia — Pilih Sesuai Minatmu',
+                        'Hubungi kami: ' . ($pengaturan['kontak'] ?? '(022) 7234924'),
+                    ];
+                @endphp
+                @foreach(array_merge($items, $items) as $item)
+                    <span class="ticker-item">
+                        <span class="dot"></span>
+                        {{ $item }}
+                    </span>
+                @endforeach
             </div>
         </div>
     </div>
@@ -180,16 +262,29 @@
                 <div class="bg-blue-50 rounded-2xl p-6">
                     <i class="fas fa-bullseye text-blue-600 text-3xl mb-3"></i>
                     <h3 class="text-xl font-bold">Visi</h3>
-                    <p class="text-gray-700 mt-2">"Menjadi sekolah vokasi berstandar internasional yang menghasilkan lulusan technopreneur."</p>
+                    <p class="text-gray-700 mt-2">
+                        {{ $pengaturan['visi'] ?? '"Menjadi sekolah vokasi berstandar internasional yang menghasilkan lulusan technopreneur."' }}
+                    </p>
                 </div>
                 <div class="bg-cyan-50 rounded-2xl p-6">
                     <i class="fas fa-list-check text-cyan-600 text-3xl mb-3"></i>
                     <h3 class="text-xl font-bold">Misi</h3>
-                    <ul class="list-disc list-inside text-gray-700 space-y-1 mt-2">
-                        <li>Mengimplementasikan teaching factory berbasis industri 4.0</li>
-                        <li>Mengembangkan karakter disiplin, inovatif, dan kolaboratif</li>
-                        <li>Memperluas kerjasama dengan DUDI nasional & internasional</li>
-                    </ul>
+                    @php
+                        $misiLines = array_filter(explode("\n", $pengaturan['misi'] ?? ''));
+                    @endphp
+                    @if(count($misiLines) > 0)
+                        <ul class="list-disc list-inside text-gray-700 space-y-1 mt-2">
+                            @foreach($misiLines as $line)
+                                <li>{{ trim($line) }}</li>
+                            @endforeach
+                        </ul>
+                    @else
+                        <ul class="list-disc list-inside text-gray-700 space-y-1 mt-2">
+                            <li>Mengimplementasikan teaching factory berbasis industri 4.0</li>
+                            <li>Mengembangkan karakter disiplin, inovatif, dan kolaboratif</li>
+                            <li>Memperluas kerjasama dengan DUDI nasional & internasional</li>
+                        </ul>
+                    @endif
                 </div>
             </div>
         </div>
@@ -357,12 +452,22 @@
     <footer class="bg-white border-t border-gray-200 py-10">
         <div class="max-w-7xl mx-auto px-4 text-center text-gray-500 text-sm">
             <div class="flex justify-center space-x-6 mb-4">
+                @if(isset($pengaturan['instagram']) && $pengaturan['instagram'])
+                <a href="{{ $pengaturan['instagram'] }}" target="_blank" class="hover:text-pink-500 transition"><i class="fab fa-instagram text-xl"></i></a>
+                @endif
+                @if(isset($pengaturan['facebook']) && $pengaturan['facebook'])
+                <a href="{{ $pengaturan['facebook'] }}" target="_blank" class="hover:text-blue-600 transition"><i class="fab fa-facebook text-xl"></i></a>
+                @endif
+                @if(isset($pengaturan['youtube']) && $pengaturan['youtube'])
+                <a href="{{ $pengaturan['youtube'] }}" target="_blank" class="hover:text-red-500 transition"><i class="fab fa-youtube text-xl"></i></a>
+                @endif
+                @if(!isset($pengaturan['instagram']) && !isset($pengaturan['facebook']) && !isset($pengaturan['youtube']))
                 <a href="#" class="hover:text-blue-600"><i class="fab fa-instagram text-xl"></i></a>
                 <a href="#" class="hover:text-blue-600"><i class="fab fa-facebook text-xl"></i></a>
                 <a href="#" class="hover:text-blue-600"><i class="fab fa-youtube text-xl"></i></a>
-                <a href="#" class="hover:text-blue-600"><i class="fab fa-tiktok text-xl"></i></a>
+                @endif
             </div>
-            <p>© {{ date('Y') }} PPDB SMK ICB Cinta Teknika. All Rights Reserved.</p>
+            <p>© {{ date('Y') }} PPDB {{ $pengaturan['nama_sekolah'] ?? 'SMK ICB Cinta Teknika' }}. All Rights Reserved.</p>
             <p class="text-xs mt-1">#FutureReady #VokasiHebat</p>
         </div>
     </footer>
