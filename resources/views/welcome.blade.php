@@ -57,10 +57,14 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center space-x-3">
-                    <div class="w-9 h-9 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-md">
-                        <i class="fas fa-laptop-code text-white text-sm"></i>
-                    </div>
-                    <span class="font-extrabold text-gray-800 text-lg">SMK ICB<span class="text-blue-600"> Cinta Teknika</span></span>
+                    @if(isset($pengaturan['logo']) && Storage::disk('public')->exists($pengaturan['logo']))
+                        <img src="{{ Storage::url($pengaturan['logo']) }}" alt="Logo SMK ICB" class="w-10 h-10 object-contain drop-shadow-sm">
+                    @else
+                        <div class="w-9 h-9 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-md">
+                            <i class="fas fa-laptop-code text-white text-sm"></i>
+                        </div>
+                    @endif
+                    <span class="font-extrabold text-gray-800 text-lg">{{ $pengaturan['nama_sekolah'] ?? 'SMK ICB Cinta Teknika' }}</span>
                 </div>
                 <div class="hidden md:flex space-x-8 text-gray-700 font-medium">
                     <a href="#home" class="hover:text-blue-600 transition">Beranda</a>
@@ -74,8 +78,9 @@
                     @auth
                         <a href="{{ url('/dashboard') }}" class="px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-700 transition shadow-md">Dashboard</a>
                     @else
-                        <a href="{{ route('login') }}" class="text-gray-600 hover:text-blue-600">Login</a>
+                        <a href="{{ route('login') }}" class="text-gray-600 hover:text-blue-600 font-medium">Login Siswa</a>
                         <a href="{{ route('register') }}" class="px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-700 transition shadow-md">Daftar</a>
+                        <a href="{{ url('/admin/login') }}" class="px-4 py-2 bg-gray-800 text-white rounded-xl text-sm font-semibold hover:bg-gray-900 transition shadow-md"><i class="fas fa-user-shield mr-1"></i> Admin</a>
                     @endauth
                 </div>
                 <div class="md:hidden">
@@ -198,38 +203,27 @@
                 <h2 class="text-4xl md:text-5xl font-black text-gray-800 mt-4">Pilih Jurusan Favoritmu</h2>
             </div>
             <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                @forelse($jurusan as $j)
                 <div class="card-modern overflow-hidden">
-                    <img src="https://picsum.photos/id/0/400/250" class="w-full h-48 object-cover">
+                    @if($j->gambar && Storage::disk('public')->exists($j->gambar))
+                        <img src="{{ Storage::url($j->gambar) }}" class="w-full h-48 object-cover">
+                    @else
+                        <div class="w-full h-48 bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center">
+                            <i class="fas fa-laptop-code text-5xl text-blue-200"></i>
+                        </div>
+                    @endif
                     <div class="p-5">
-                        <h3 class="text-xl font-bold">TKJ</h3>
-                        <p class="text-gray-500 text-sm">Teknik Komputer & Jaringan</p>
-                        <p class="text-gray-600 mt-2 text-sm">Membangun infrastruktur jaringan, administrasi server, keamanan siber.</p>
+                        <h3 class="text-xl font-bold">{{ $j->kode }}</h3>
+                        <p class="text-gray-500 text-sm">{{ $j->nama }}</p>
+                        <p class="text-gray-600 mt-2 text-sm">{{ Str::limit($j->deskripsi, 80) }}</p>
                     </div>
                 </div>
-                <div class="card-modern overflow-hidden">
-                    <img src="https://picsum.photos/id/0/401/250" class="w-full h-48 object-cover">
-                    <div class="p-5">
-                        <h3 class="text-xl font-bold">RPL</h3>
-                        <p class="text-gray-500 text-sm">Rekayasa Perangkat Lunak</p>
-                        <p class="text-gray-600 mt-2 text-sm">Pengembangan web, mobile, AI, dan game berbasis industri.</p>
-                    </div>
+                @empty
+                <div class="col-span-full text-center py-10 text-gray-500">
+                    <i class="fas fa-exclamation-circle text-3xl mb-3 opacity-50"></i>
+                    <p>Belum ada data jurusan</p>
                 </div>
-                <div class="card-modern overflow-hidden">
-                    <img src="https://picsum.photos/id/0/402/250" class="w-full h-48 object-cover">
-                    <div class="p-5">
-                        <h3 class="text-xl font-bold">Multimedia</h3>
-                        <p class="text-gray-500 text-sm">Desain Grafis & Animasi</p>
-                        <p class="text-gray-600 mt-2 text-sm">Motion graphic, editing video, fotografi, produksi konten kreatif.</p>
-                    </div>
-                </div>
-                <div class="card-modern overflow-hidden">
-                    <img src="https://picsum.photos/id/0/403/250" class="w-full h-48 object-cover">
-                    <div class="p-5">
-                        <h3 class="text-xl font-bold">TKR</h3>
-                        <p class="text-gray-500 text-sm">Teknik Kendaraan Ringan</p>
-                        <p class="text-gray-600 mt-2 text-sm">Perawatan mesin, sistem kelistrikan, diagnosa kendaraan modern.</p>
-                    </div>
-                </div>
+                @endforelse
             </div>
         </div>
     </section>
@@ -315,14 +309,19 @@
                 <h2 class="text-4xl md:text-5xl font-black text-gray-800 mt-4">Galeri Sekolah</h2>
             </div>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <img src="https://picsum.photos/id/20/400/300" class="rounded-xl w-full h-40 object-cover shadow hover:scale-105 transition">
-                <img src="https://picsum.photos/id/26/400/300" class="rounded-xl w-full h-40 object-cover shadow hover:scale-105 transition">
-                <img src="https://picsum.photos/id/30/400/300" class="rounded-xl w-full h-40 object-cover shadow hover:scale-105 transition">
-                <img src="https://picsum.photos/id/42/400/300" class="rounded-xl w-full h-40 object-cover shadow hover:scale-105 transition">
-                <img src="https://picsum.photos/id/48/400/300" class="rounded-xl w-full h-40 object-cover shadow hover:scale-105 transition">
-                <img src="https://picsum.photos/id/57/400/300" class="rounded-xl w-full h-40 object-cover shadow hover:scale-105 transition">
-                <img src="https://picsum.photos/id/62/400/300" class="rounded-xl w-full h-40 object-cover shadow hover:scale-105 transition">
-                <img src="https://picsum.photos/id/91/400/300" class="rounded-xl w-full h-40 object-cover shadow hover:scale-105 transition">
+                @forelse($galeri as $g)
+                    <div class="relative group overflow-hidden rounded-xl h-40 shadow hover:shadow-lg transition">
+                        <img src="{{ Storage::url($g->gambar) }}" class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                            <span class="text-white text-sm font-medium px-2 text-center">{{ $g->judul }}</span>
+                        </div>
+                    </div>
+                @empty
+                    <div class="col-span-full text-center py-10 text-gray-500">
+                        <i class="fas fa-images text-3xl mb-3 opacity-50"></i>
+                        <p>Belum ada foto galeri</p>
+                    </div>
+                @endforelse
             </div>
         </div>
     </section>
@@ -334,10 +333,12 @@
                 <div>
                     <h3 class="text-2xl font-bold text-gray-800">Kontak & Lokasi</h3>
                     <div class="mt-6 space-y-4 text-gray-700">
-                        <div class="flex items-center gap-3"><i class="fas fa-map-marker-alt text-blue-500 w-6"></i> Jl. Pendidikan No.123, Cinta Teknika, Bandung, Jawa Barat 40287</div>
-                        <div class="flex items-center gap-3"><i class="fab fa-whatsapp text-green-500 w-6"></i> +62 812-3456-7890 (Admin PPDB)</div>
-                        <div class="flex items-center gap-3"><i class="fas fa-envelope text-blue-500 w-6"></i> ppdb@smkicb.sch.id</div>
-                        <div class="flex items-center gap-3"><i class="fas fa-globe text-blue-500 w-6"></i> www.smkicb.sch.id</div>
+                        <div class="flex items-center gap-3"><i class="fas fa-map-marker-alt text-blue-500 w-6 text-center"></i> {{ $pengaturan['alamat'] ?? 'Jl. Pendidikan No.123, Cinta Teknika, Bandung' }}</div>
+                        <div class="flex items-center gap-3"><i class="fab fa-whatsapp text-green-500 w-6 text-center"></i> {{ $pengaturan['kontak'] ?? '+62 812-3456-7890' }}</div>
+                        <div class="flex items-center gap-3"><i class="fas fa-envelope text-blue-500 w-6 text-center"></i> {{ $pengaturan['email'] ?? 'ppdb@smkicb.sch.id' }}</div>
+                        @if(isset($pengaturan['website']) && $pengaturan['website'])
+                        <div class="flex items-center gap-3"><i class="fas fa-globe text-blue-500 w-6 text-center"></i> {{ $pengaturan['website'] }}</div>
+                        @endif
                     </div>
                     <div class="mt-8 p-4 bg-blue-50 rounded-xl">
                         <p class="font-semibold">Jam Operasional PPDB</p>

@@ -78,7 +78,6 @@ class StudentController extends Controller
 
         $request->validate($rules);
 
-        // Create user if public registration, otherwise use authenticated user
         if ($isPublic) {
             $user = User::create([
                 'name' => $request->full_name,

@@ -31,21 +31,23 @@ class PengaturanController extends Controller
     {
         $request->validate([
             'nama_sekolah' => 'required|string|max:255',
-            'info_ppdb' => 'nullable|string',
-            'alamat' => 'nullable|string',
-            'kontak' => 'nullable|string|max:50',
-            'email' => 'nullable|email|max:100',
-            'whatsapp' => 'nullable|string|max:20',
-            'instagram' => 'nullable|string|max:100',
-            'facebook' => 'nullable|string|max:100',
-            'youtube' => 'nullable|string|max:100',
-            'sejarah' => 'nullable|string',
-            'visi_misi' => 'nullable|string',
-            'warna_tema' => 'nullable|string|regex:/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/',
-            'logo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'favicon' => 'nullable|image|mimes:ico,png,jpg|max:1024',
-            'banner_home' => 'nullable|image|mimes:jpg,jpeg,png|max:3072',
+            'info_ppdb'    => 'nullable|string',
+            'alamat'       => 'nullable|string',
+            'kontak'       => 'nullable|string|max:50',
+            'email'        => 'nullable|email|max:100',
+            'whatsapp'     => 'nullable|string|max:20',
+            'instagram'    => 'nullable|string|max:100',
+            'facebook'     => 'nullable|string|max:100',
+            'youtube'      => 'nullable|string|max:100',
+            'sejarah'      => 'nullable|string',
+            'visi_misi'    => 'nullable|string',
+            // Gunakan array syntax agar '|' di dalam regex tidak dianggap pemisah rule
+            'warna_tema'   => ['nullable', 'string', 'regex:/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/'],
+            'logo'         => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'favicon'      => 'nullable|image|mimes:ico,png,jpg|max:1024',
+            'banner_home'  => 'nullable|image|mimes:jpg,jpeg,png|max:3072',
         ]);
+
 
         // Update atau buat data text
         $textFields = [

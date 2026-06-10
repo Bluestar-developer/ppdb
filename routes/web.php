@@ -17,7 +17,10 @@ use App\Http\Controllers\Admin\AkunController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    $jurusan = \App\Models\Jurusan::where('is_active', true)->get();
+    $galeri = \App\Models\Galeri::latest()->take(8)->get();
+    $pengaturan = \App\Models\Pengaturan::pluck('value', 'key');
+    return view('welcome', compact('jurusan', 'galeri', 'pengaturan'));
 });
 
 // Route untuk pendaftaran publik (tanpa auth)
@@ -142,3 +145,7 @@ Route::get('/login', function () {
 Route::get('/register', function () {
     return redirect()->route('student.showRegister');
 })->name('register');
+
+Route::get('/admin/login', function () {
+    return view('auth.admin-login');
+})->name('admin.login')->middleware('guest');

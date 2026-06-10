@@ -11,6 +11,15 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
         * { font-family: 'Inter', sans-serif; }
         .sidebar-item {
             display: flex;
@@ -20,7 +29,7 @@
             margin: 4px 12px;
             border-radius: 12px;
             color: #475569;
-            transition: all 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             font-weight: 500;
         }
         .sidebar-item i {
@@ -63,9 +72,16 @@
             <!-- Logo & Toggle -->
             <div class="p-5 flex items-center justify-between border-b border-gray-100">
                 <div x-show="sidebarOpen" class="flex items-center gap-2">
-                    <div class="w-9 h-9 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-md">
-                        <i class="fas fa-graduation-cap text-white text-sm"></i>
-                    </div>
+                    @php
+                        $logoPath = \App\Models\Pengaturan::where('key', 'logo')->value('value');
+                    @endphp
+                    @if($logoPath && Storage::disk('public')->exists($logoPath))
+                        <img src="{{ Storage::url($logoPath) }}" alt="Logo" class="w-9 h-9 object-contain drop-shadow-md">
+                    @else
+                        <div class="w-9 h-9 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg transform transition hover:scale-110">
+                            <i class="fas fa-graduation-cap text-white text-sm"></i>
+                        </div>
+                    @endif
                     <span class="font-extrabold text-xl bg-gradient-to-r from-blue-700 to-indigo-700 bg-clip-text text-transparent">Admin PPDB</span>
                 </div>
                 <button @click="sidebarOpen = !sidebarOpen" class="text-gray-400 hover:text-blue-600 focus:outline-none">
@@ -74,7 +90,7 @@
             </div>
 
             <!-- Menu -->
-            <nav class="flex-1 overflow-y-auto py-6">
+            <nav class="flex-1 overflow-y-auto no-scrollbar py-6">
                 <div class="space-y-1">
                     <a href="{{ route('admin.dashboard') }}" class="sidebar-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                         <i class="fas fa-tachometer-alt"></i>

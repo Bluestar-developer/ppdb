@@ -263,13 +263,13 @@
                     @if($errors->any())
                         <div class="alert-error">{{ $errors->first() }}</div>
                     @endif
-                    <div class="form-title">Selamat Datang!</div>
-                    <div class="form-subtitle">Silakan login ke akun PPDB Anda</div>
+                    <div class="form-title">Admin PPDB</div>
+                    <div class="form-subtitle">Login khusus administrator</div>
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
                         <div class="input-group">
-                            <label>NIK (16 digit) *</label>
-                            <input type="text" name="nik" value="{{ old('nik') }}" required autofocus maxlength="16" placeholder="Nomor Induk Kependudukan">
+                            <label>Email *</label>
+                            <input type="email" name="email" value="{{ old('email') }}" required autofocus placeholder="Alamat Email">
                         </div>
                         <div class="input-group">
                             <label>Password</label>
@@ -283,85 +283,6 @@
                         <button type="button" class="btn-google" onclick="alert('Fitur segera hadir')">
                             <i class="fab fa-google" style="color:#ea4335"></i> Login dengan Google
                         </button>
-                        <div class="switch-text">
-                            Belum punya akun? <a onclick="doFlip()">Daftar</a>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- BACK: FORM PENDAFTARAN LENGKAP (sekaligus buat akun) -->
-                <div class="flip-face flip-face--back" id="faceBack">
-                    @if($errors->any())
-                        <div class="alert-error">{{ $errors->first() }}</div>
-                    @endif
-                    <div class="form-title">Pendaftaran Siswa Baru</div>
-                    <div class="form-subtitle">Isi data diri untuk membuat akun</div>
-                    <form method="POST" action="{{ route('student.register.store') }}">
-                        @csrf
-                        <div class="input-group">
-                            <label>Nama Lengkap *</label>
-                            <input type="text" name="full_name" value="{{ old('full_name') }}" required>
-                        </div>
-                        <div class="input-group">
-                            <label>NIK (16 digit) *</label>
-                            <input type="text" name="nik" value="{{ old('nik') }}" maxlength="16" required>
-                        </div>
-                        <div class="input-group">
-                            <label>Tempat Lahir *</label>
-                            <input type="text" name="place_of_birth" value="{{ old('place_of_birth') }}" required>
-                        </div>
-                        <div class="input-group">
-                            <label>Tanggal Lahir *</label>
-                            <input type="date" name="date_of_birth" value="{{ old('date_of_birth') }}" required>
-                        </div>
-                        <div class="input-group">
-                            <label>Jenis Kelamin *</label>
-                            <select name="gender" required>
-                                <option value="">Pilih</option>
-                                <option value="L">Laki-laki</option>
-                                <option value="P">Perempuan</option>
-                            </select>
-                        </div>
-                        <div class="input-group">
-                            <label>Agama *</label>
-                            <select name="religion" required>
-                                <option value="">Pilih</option>
-                                <option>Islam</option><option>Kristen</option><option>Katolik</option><option>Hindu</option><option>Buddha</option>
-                            </select>
-                        </div>
-                        <div class="input-group">
-                            <label>Alamat Lengkap *</label>
-                            <textarea name="address" rows="2" style="width:100%; border:1.5px solid #e2e8f0; border-radius:0.75rem; padding:0.68rem; font-family:inherit;" required>{{ old('address') }}</textarea>
-                        </div>
-                        <div class="input-group">
-                            <label>No HP *</label>
-                            <input type="text" name="phone" value="{{ old('phone') }}" required>
-                        </div>
-                        <div class="input-group">
-                            <label>Asal Sekolah *</label>
-                            <input type="text" name="previous_school" value="{{ old('previous_school') }}" required>
-                        </div>
-                        <div class="input-group">
-                            <label>Jurusan Pilihan *</label>
-                            <select name="major_choice" required>
-                                <option value="">-- Pilih Jurusan --</option>
-                                @foreach(\App\Models\Jurusan::where('is_active', true)->get() as $j)
-                                    <option value="{{ $j->kode }}">{{ $j->nama }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="input-group">
-                            <label>Password *</label>
-                            <input type="password" name="password" required placeholder="Minimal 8 karakter">
-                        </div>
-                        <div class="input-group">
-                            <label>Konfirmasi Password *</label>
-                            <input type="password" name="password_confirmation" required placeholder="Ulangi password">
-                        </div>
-                        <button type="submit" class="btn-primary">Daftar Sekarang</button>
-                        <div class="switch-text">
-                            Sudah punya akun? <a onclick="doFlip()">Login</a>
-                        </div>
                     </form>
                 </div>
             </div>
@@ -370,47 +291,7 @@
 </div>
 
 <script>
-    const card = document.getElementById('flipCard');
-    const front = document.getElementById('faceFront');
-    const back = document.getElementById('faceBack');
-    let flipped = false;
-    let busy = false;
-
-    function syncHeight() {
-        const activeFace = flipped ? back : front;
-        card.style.height = activeFace.offsetHeight + 'px';
-    }
-
-    function doFlip() {
-        if (busy) return;
-        busy = true;
-        flipped = !flipped;
-        card.classList.toggle('is-flipped', flipped);
-        setTimeout(() => syncHeight(), 350);
-        setTimeout(() => { busy = false; }, 750);
-    }
-
-    window.addEventListener('load', () => {
-        syncHeight();
-        // Auto flip jika error validasi dari backend pada form register
-        @if($errors->any() && ($errors->has('full_name') || $errors->has('nik')))
-            flipped = true;
-            card.classList.add('is-flipped');
-            syncHeight();
-        @endif
-    });
-    window.addEventListener('resize', syncHeight);
-
-    // Fallback mobile
-    if (window.innerWidth <= 768) {
-        document.querySelectorAll('[onclick="doFlip()"]').forEach(el => {
-            el.onclick = () => {
-                flipped = !flipped;
-                front.classList.toggle('hide-mobile', flipped);
-                back.classList.toggle('show-mobile', flipped);
-            };
-        });
-    }
+    // No flip functionality needed for admin login
 </script>
 </body>
 </html>

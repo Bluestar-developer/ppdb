@@ -1,9 +1,6 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -12,14 +9,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            // Add unique constraint to nik
-            try {
-                $table->unique('nik');
-            } catch (\Exception $e) {
-                // Constraint might already exist
-            }
-        });
+        // Unique constraint nik sudah dibuat
+        // pada migration sebelumnya.
     }
 
     /**
@@ -27,12 +18,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            try {
-                $table->dropUnique(['nik']);
-            } catch (\Exception $e) {
-                // Index may not exist
-            }
-        });
+        // Tidak ada yang perlu di-rollback.
     }
 };

@@ -27,11 +27,20 @@ class LoginRequest extends FormRequest
      */
     public function rules(): array
     {
+        // Only validate whichever login field was submitted
+        if ($this->filled('nik')) {
+            return [
+                'nik'      => ['required', 'string', 'min:1'],
+                'password' => ['required', 'string'],
+            ];
+        }
+
         return [
-            'nik' => ['required', 'string', 'size:16'],
+            'email'    => ['required', 'string'],
             'password' => ['required', 'string'],
         ];
     }
+
 
     /**
      * Attempt to authenticate the request's credentials.
@@ -42,11 +51,26 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('nik', 'password'), $this->boolean('remember'))) {
+        $credentials = [];
+        $loginField = 'nik';
+        
+        if ($this->filled('nik')) {
+            $credentials = $this->only('nik', 'password');
+            $loginField = 'nik';
+        } elseif ($this->filled('email')) {
+            $credentials = $this->only('email', 'password');
+            $loginField = 'email';
+        } else {
+            throw ValidationException::withMessages([
+                'nik' => 'Kolom NIK atau Email harus diisi.',
+            ]);
+        }
+
+        if (! Auth::attempt($credentials, $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'nik' => trans('auth.failed'),
+                $loginField => trans('auth.failed'),
             ]);
         }
 
@@ -69,7 +93,7 @@ class LoginRequest extends FormRequest
         $seconds = RateLimiter::availableIn($this->throttleKey());
 
         throw ValidationException::withMessages([
-            'email' => trans('auth.throttle', [
+            $this->filled('nik') ? 'nik' : 'email' => trans('auth.throttle', [
                 'seconds' => $seconds,
                 'minutes' => ceil($seconds / 60),
             ]),
@@ -81,6 +105,7 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->string('nik')).'|'.$this->ip());
+        $loginValue = $this->filled('nik') ? $this->string('nik') : $this->string('email');
+        return Str::transliterate(Str::lower($loginValue).'|'.$this->ip());
     }
 }

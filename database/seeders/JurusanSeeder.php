@@ -10,11 +10,12 @@ class JurusanSeeder extends Seeder
     public function run()
     {
         $jurusan = [
+            ['kode' => 'TSM', 'nama' => 'Teknik Sepeda Motor', 'kuota' => 100],
+            ['kode' => 'TKR', 'nama' => 'Teknik Kendaraan Ringan', 'kuota' => 100],
+            ['kode' => 'FRM', 'nama' => 'Farmasi', 'kuota' => 100],
+            ['kode' => 'KPW', 'nama' => 'Keperawatan', 'kuota' => 100],
             ['kode' => 'RPL', 'nama' => 'Rekayasa Perangkat Lunak', 'kuota' => 120],
             ['kode' => 'TKJ', 'nama' => 'Teknik Komputer Jaringan', 'kuota' => 100],
-            ['kode' => 'MM',  'nama' => 'Multimedia', 'kuota' => 90],
-            ['kode' => 'AKL', 'nama' => 'Akuntansi', 'kuota' => 80],
-            ['kode' => 'OTKP','nama' => 'Otomatisasi Tata Kelola Perkantoran', 'kuota' => 70],
         ];
 
         foreach ($jurusan as $j) {
