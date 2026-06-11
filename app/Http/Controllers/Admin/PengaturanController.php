@@ -14,9 +14,9 @@ class PengaturanController extends Controller
     {
         $pengaturan = [];
         $keys = [
-            'nama_sekolah', 'logo', 'favicon', 'banner_home', 'warna_tema',
+            'nama_sekolah', 'logo', 'favicon', 'banner_home', 'banner_2', 'warna_tema',
             'info_ppdb', 'alamat', 'kontak', 'email', 'whatsapp',
-            'instagram', 'facebook', 'youtube', 'sejarah', 'visi', 'misi', 'website'
+            'instagram', 'facebook', 'youtube', 'sejarah', 'visi', 'misi', 'tujuan', 'jam_operasional', 'website'
         ];
         
         foreach ($keys as $key) {
@@ -43,18 +43,36 @@ class PengaturanController extends Controller
             'sejarah'      => 'nullable|string',
             'visi'         => 'nullable|string',
             'misi'         => 'nullable|string',
+            'tujuan'       => 'nullable|string',
+            'jam_operasional' => 'nullable|string',
             // Gunakan array syntax agar '|' di dalam regex tidak dianggap pemisah rule
             'warna_tema'   => ['nullable', 'string', 'regex:/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/'],
             'logo'         => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'favicon'      => 'nullable|image|mimes:ico,png,jpg|max:1024',
             'banner_home'  => 'nullable|image|mimes:jpg,jpeg,png|max:3072',
+            'banner_2'     => 'nullable|image|mimes:jpg,jpeg,png|max:3072',
+        ], [
+            'nama_sekolah.required' => 'Nama sekolah wajib diisi.',
+            'logo.image' => 'Logo harus berupa gambar.',
+            'logo.mimes' => 'Format logo harus berupa JPG, JPEG, atau PNG.',
+            'logo.max' => 'Ukuran logo tidak boleh lebih dari 2 MB.',
+            'favicon.image' => 'Favicon harus berupa gambar.',
+            'favicon.mimes' => 'Format favicon harus berupa ICO, PNG, atau JPG.',
+            'favicon.max' => 'Ukuran favicon tidak boleh lebih dari 1 MB.',
+            'banner_home.image' => 'Banner beranda harus berupa gambar.',
+            'banner_home.mimes' => 'Format banner beranda harus berupa JPG, JPEG, atau PNG.',
+            'banner_home.max' => 'Ukuran banner beranda tidak boleh lebih dari 3 MB.',
+            'banner_2.image' => 'Banner 2 harus berupa gambar.',
+            'banner_2.mimes' => 'Format banner 2 harus berupa JPG, JPEG, atau PNG.',
+            'banner_2.max' => 'Ukuran banner 2 tidak boleh lebih dari 3 MB.',
+            'warna_tema.regex' => 'Format warna tema harus berupa kode HEX yang valid (contoh: #2563eb).',
         ]);
 
 
         // Update atau buat data text
         $textFields = [
             'nama_sekolah', 'info_ppdb', 'alamat', 'kontak', 'email', 'whatsapp', 'website',
-            'instagram', 'facebook', 'youtube', 'sejarah', 'visi', 'misi', 'warna_tema'
+            'instagram', 'facebook', 'youtube', 'sejarah', 'visi', 'misi', 'tujuan', 'jam_operasional', 'warna_tema'
         ];
         
         foreach ($textFields as $field) {
@@ -92,6 +110,16 @@ class PengaturanController extends Controller
             }
             $path = $request->file('banner_home')->store('pengaturan', 'public');
             Pengaturan::updateOrCreate(['key' => 'banner_home'], ['value' => $path]);
+        }
+
+        // Upload banner 2
+        if ($request->hasFile('banner_2')) {
+            $oldBanner2 = Pengaturan::where('key', 'banner_2')->value('value');
+            if ($oldBanner2 && Storage::disk('public')->exists($oldBanner2)) {
+                Storage::disk('public')->delete($oldBanner2);
+            }
+            $path = $request->file('banner_2')->store('pengaturan', 'public');
+            Pengaturan::updateOrCreate(['key' => 'banner_2'], ['value' => $path]);
         }
 
         return redirect()->route('admin.pengaturan.index')

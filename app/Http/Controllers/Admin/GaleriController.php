@@ -35,8 +35,14 @@ class GaleriController extends Controller
     {
         $request->validate([
             'judul' => 'required|string|max:255',
-            'gambar' => 'required|image|mimes:jpg,jpeg,png|max:5120', // max 5MB
+            'gambar' => 'required|image|mimes:jpg,jpeg,png,webp|max:10240', // max 10MB
             'album' => 'nullable|string|max:100'
+        ], [
+            'judul.required' => 'Judul foto wajib diisi.',
+            'gambar.required' => 'Berkas gambar wajib diunggah.',
+            'gambar.image' => 'Berkas harus berupa gambar.',
+            'gambar.mimes' => 'Format gambar harus berupa JPG, JPEG, PNG, atau WEBP.',
+            'gambar.max' => 'Ukuran gambar tidak boleh lebih dari 10 MB.',
         ]);
 
         $path = $request->file('gambar')->store('galeri', 'public');
@@ -62,8 +68,13 @@ class GaleriController extends Controller
     {
         $request->validate([
             'judul' => 'required|string|max:255',
-            'gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
+            'gambar' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:10240',
             'album' => 'nullable|string|max:100'
+        ], [
+            'judul.required' => 'Judul foto wajib diisi.',
+            'gambar.image' => 'Berkas harus berupa gambar.',
+            'gambar.mimes' => 'Format gambar harus berupa JPG, JPEG, PNG, atau WEBP.',
+            'gambar.max' => 'Ukuran gambar tidak boleh lebih dari 10 MB.',
         ]);
 
         $data = ['judul' => $request->judul, 'album' => $request->album];

@@ -4,14 +4,23 @@
 
 @section('content')
 <div class="flex justify-center items-center min-h-[80vh]">
-    <div class="bg-white rounded-2xl shadow-2xl border border-gray-100 p-8 max-w-3xl w-full transition-all duration-300 hover:shadow-3d transform hover:-translate-y-1">
-        <!-- Header dengan ikon gradien -->
+    <div class="bg-white rounded-2xl shadow-2xl border border-gray-100 p-8 max-w-2xl w-full transition-all duration-300 hover:shadow-3d transform hover:-translate-y-1">
         <div class="flex items-center gap-3 border-b border-gray-100 pb-4 mb-6">
             <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-md">
                 <i class="fas fa-bullhorn text-white text-sm"></i>
             </div>
             <h2 class="text-2xl font-bold text-gray-800">Tambah Pengumuman Baru</h2>
         </div>
+
+        @if($errors->any())
+            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-3 rounded-lg mb-6 shadow-sm">
+                <ul class="list-disc list-inside text-sm font-medium">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
         <form action="{{ route('admin.pengumuman.store') }}" method="POST" enctype="multipart/form-data" class="space-y-5">
             @csrf
@@ -20,14 +29,24 @@
                 <label class="block text-sm font-semibold text-gray-700 mb-1">Judul <span class="text-red-500">*</span></label>
                 <input type="text" name="judul" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-400 focus:border-transparent transition shadow-sm" required>
             </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Tanggal Mulai <span class="text-red-500">*</span></label>
+                    <input type="date" name="tanggal_mulai" value="{{ date('Y-m-d') }}" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-400 transition shadow-sm" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Tanggal Selesai <span class="text-red-500">*</span></label>
+                    <input type="date" name="tanggal_selesai" value="{{ date('Y-m-d') }}" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-400 transition shadow-sm" required>
+                </div>
+            </div>
             <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-1">Isi Pengumuman <span class="text-red-500">*</span></label>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Deskripsi <span class="text-red-500">*</span></label>
                 <textarea name="isi" rows="6" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-400 transition shadow-sm" required placeholder="Tulis detail pengumuman di sini..."></textarea>
             </div>
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-1">Gambar (opsional)</label>
                 <input type="file" name="gambar" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-400 transition shadow-sm" accept="image/*">
-                <p class="text-xs text-gray-400 mt-1">Format JPG, PNG, maks 2MB</p>
+                <p class="text-xs text-gray-400 mt-1">Format JPG, JPEG, PNG, WEBP, maks 2MB</p>
             </div>
             <div class="flex items-center gap-2">
                 <input type="checkbox" name="is_published" id="is_published" value="1" class="w-4 h-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">

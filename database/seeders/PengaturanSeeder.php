@@ -23,6 +23,8 @@ class PengaturanSeeder extends Seeder
             ['key' => 'instagram', 'value' => 'smkicb'],
             ['key' => 'facebook', 'value' => 'smkicb'],
             ['key' => 'youtube', 'value' => 'smkicb'],
+            ['key' => 'sejarah', 'value' => 'Berdiri sejak 2010, SMK ICB Cinta Teknika berkomitmen menjadi pusat pendidikan vokasi terdepan di Indonesia. Dengan kurikulum berbasis industri 4.0, kami melahirkan lulusan yang siap kerja, technopreneur, dan berdaya saing global.'],
+            ['key' => 'banner_2', 'value' => ''],
         ];
         foreach ($defaults as $data) {
             Pengaturan::updateOrCreate(['key' => $data['key']], $data);

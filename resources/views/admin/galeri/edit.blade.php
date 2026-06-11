@@ -12,6 +12,16 @@
             <h2 class="text-2xl font-bold text-gray-800">Edit Foto: {{ $galeri->judul }}</h2>
         </div>
 
+        @if($errors->any())
+            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-3 rounded-lg mb-6 shadow-sm">
+                <ul class="list-disc list-inside text-sm font-medium">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <form action="{{ route('admin.galeri.update', $galeri) }}" method="POST" enctype="multipart/form-data" class="space-y-5">
             @csrf @method('PUT')
             <div>
@@ -27,6 +37,7 @@
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-1">Ganti Gambar (opsional)</label>
                 <input type="file" name="gambar" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-400 transition shadow-sm" accept="image/*">
+                <p class="text-xs text-gray-400 mt-1">Format JPG, JPEG, PNG, WEBP, maks 10MB</p>
             </div>
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-1">Album (opsional)</label>

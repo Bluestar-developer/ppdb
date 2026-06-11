@@ -116,6 +116,10 @@
                         <i class="fas fa-calendar-alt"></i>
                         <span x-show="sidebarOpen">Jadwal PPDB</span>
                     </a>
+                    <a href="{{ route('admin.jam_operasional.index') }}" class="sidebar-item {{ request()->routeIs('admin.jam_operasional*') ? 'active' : '' }}">
+                        <i class="fas fa-clock"></i>
+                        <span x-show="sidebarOpen">Jam Operasional</span>
+                    </a>
                     <a href="{{ route('admin.profil_sekolah.edit') }}" class="sidebar-item {{ request()->routeIs('admin.profil_sekolah*') ? 'active' : '' }}">
                         <i class="fas fa-school"></i>
                         <span x-show="sidebarOpen">Profil Sekolah</span>

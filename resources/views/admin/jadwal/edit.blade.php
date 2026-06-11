@@ -12,6 +12,16 @@
             <h2 class="text-2xl font-bold text-gray-800">Edit Jadwal</h2>
         </div>
 
+        @if($errors->any())
+            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-3 rounded-lg mb-6 shadow-sm">
+                <ul class="list-disc list-inside text-sm font-medium">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <form action="{{ route('admin.jadwal.update', $jadwal) }}" method="POST" class="space-y-5">
             @csrf @method('PUT')
             <div>

@@ -13,6 +13,7 @@ class UserSeeder extends Seeder
         User::firstOrCreate(
             ['email' => 'admin@ppdb.com'],
             [
+
                 'name' => 'Admin PPDB',
                 'password' => Hash::make('password123'),
                 'role' => 'admin',
@@ -23,6 +24,7 @@ class UserSeeder extends Seeder
         User::firstOrCreate(
             ['email' => 'siswa@example.com'],
             [
+                'nik' => '1293756745867586',
                 'name' => 'Budi Siswa',
                 'password' => Hash::make('password123'),
                 'role' => 'student',

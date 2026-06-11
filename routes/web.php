@@ -6,13 +6,15 @@ use App\Http\Controllers\Student\PaymentController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PendaftarController;
 use App\Http\Controllers\Admin\VerifikasiController;
-use App\Http\Controllers\Admin\JurusanController;
+use App\Http\Controllers\Admin\JurusanController as AdminJurusanController;
 use App\Http\Controllers\Admin\PengumumanController;
 use App\Http\Controllers\Admin\JadwalController;
 use App\Http\Controllers\Admin\ProfilSekolahController;
 use App\Http\Controllers\Admin\GaleriController;
 use App\Http\Controllers\Admin\LaporanController;
+use App\Http\Controllers\Admin\JamOperasionalController;
 use App\Http\Controllers\Admin\PengaturanController;
+use App\Http\Controllers\JurusanController;
 use App\Http\Controllers\Admin\AkunController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,8 +22,13 @@ Route::get('/', function () {
     $jurusan = \App\Models\Jurusan::where('is_active', true)->get();
     $galeri = \App\Models\Galeri::latest()->take(8)->get();
     $pengaturan = \App\Models\Pengaturan::pluck('value', 'key');
-    return view('welcome', compact('jurusan', 'galeri', 'pengaturan'));
+    $jadwal = \App\Models\JadwalPPDB::oldest()->get();
+    $pengumuman = \App\Models\Pengumuman::where('is_published', true)->latest('published_at')->take(5)->get();
+    $jam_operasional = \App\Models\JamOperasionalPPDB::orderBy('id')->get();
+    return view('welcome', compact('jurusan', 'galeri', 'pengaturan', 'jadwal', 'pengumuman', 'jam_operasional'));
+
 });
+Route::get('/jurusan/{kode}', [JurusanController::class, 'show'])->name('jurusan.show');
 
 // Route untuk pendaftaran publik (tanpa auth)
 Route::get('/daftar', [StudentController::class, 'showRegistrationForm'])->name('student.showRegister');
@@ -99,9 +106,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('verifikasi/{registration}/riwayat', [VerifikasiController::class, 'riwayat'])->name('verifikasi.riwayat');
     
     // Jurusan
-    Route::resource('jurusan', JurusanController::class);
-    Route::patch('jurusan/{jurusan}/kuota', [JurusanController::class, 'updateKuota'])->name('jurusan.kuota');
-    Route::get('jurusan-statistik', [JurusanController::class, 'statistik'])->name('jurusan.statistik');
+    Route::resource('jurusan', AdminJurusanController::class);
+    Route::patch('jurusan/{jurusan}/kuota', [AdminJurusanController::class, 'updateKuota'])->name('jurusan.kuota');
+    Route::get('jurusan-statistik', [AdminJurusanController::class, 'statistik'])->name('jurusan.statistik');
     
     // Pengumuman
     Route::resource('pengumuman', PengumumanController::class);
@@ -127,6 +134,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('pengaturan', [PengaturanController::class, 'index'])->name('pengaturan.index');
     Route::post('pengaturan', [PengaturanController::class, 'update'])->name('pengaturan.update');
     
+    // Jam Operasional
+    Route::resource('jam-operasional', JamOperasionalController::class)->names('jam_operasional');
     // Akun Saya
     Route::get('akun', [AkunController::class, 'edit'])->name('akun.index');
     Route::put('akun', [AkunController::class, 'update'])->name('akun.update');

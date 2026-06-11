@@ -16,11 +16,15 @@ class Pengumuman extends Model
         'isi',
         'gambar',
         'is_published',
-        'published_at'
+        'published_at',
+        'tanggal_mulai',
+        'tanggal_selesai'
     ];
 
     protected $casts = [
         'is_published' => 'boolean',
         'published_at' => 'datetime',
+        'tanggal_mulai' => 'date',
+        'tanggal_selesai' => 'date',
     ];
 }

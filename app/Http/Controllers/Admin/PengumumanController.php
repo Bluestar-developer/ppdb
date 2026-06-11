@@ -28,7 +28,20 @@ class PengumumanController extends Controller
         $request->validate([
             'judul' => 'required|string|max:200',
             'isi' => 'required|string',
-            'gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'tanggal_mulai' => 'required|date',
+            'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
+            'gambar' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ], [
+            'judul.required' => 'Judul pengumuman wajib diisi.',
+            'isi.required' => 'Deskripsi pengumuman wajib diisi.',
+            'tanggal_mulai.required' => 'Tanggal mulai wajib diisi.',
+            'tanggal_mulai.date' => 'Format tanggal mulai tidak valid.',
+            'tanggal_selesai.required' => 'Tanggal selesai wajib diisi.',
+            'tanggal_selesai.date' => 'Format tanggal selesai tidak valid.',
+            'tanggal_selesai.after_or_equal' => 'Tanggal selesai harus setelah atau sama dengan tanggal mulai.',
+            'gambar.image' => 'Berkas harus berupa gambar.',
+            'gambar.mimes' => 'Format gambar harus berupa JPG, JPEG, PNG, atau WEBP.',
+            'gambar.max' => 'Ukuran gambar tidak boleh lebih dari 2 MB.',
         ]);
 
         $data = $request->except('gambar');
@@ -63,7 +76,20 @@ class PengumumanController extends Controller
         $request->validate([
             'judul' => 'required|string|max:200',
             'isi' => 'required|string',
-            'gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'tanggal_mulai' => 'required|date',
+            'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
+            'gambar' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ], [
+            'judul.required' => 'Judul pengumuman wajib diisi.',
+            'isi.required' => 'Deskripsi pengumuman wajib diisi.',
+            'tanggal_mulai.required' => 'Tanggal mulai wajib diisi.',
+            'tanggal_mulai.date' => 'Format tanggal mulai tidak valid.',
+            'tanggal_selesai.required' => 'Tanggal selesai wajib diisi.',
+            'tanggal_selesai.date' => 'Format tanggal selesai tidak valid.',
+            'tanggal_selesai.after_or_equal' => 'Tanggal selesai harus setelah atau sama dengan tanggal mulai.',
+            'gambar.image' => 'Berkas harus berupa gambar.',
+            'gambar.mimes' => 'Format gambar harus berupa JPG, JPEG, PNG, atau WEBP.',
+            'gambar.max' => 'Ukuran gambar tidak boleh lebih dari 2 MB.',
         ]);
 
         $data = $request->except('gambar');
@@ -75,11 +101,12 @@ class PengumumanController extends Controller
             $data['gambar'] = $path;
         }
 
-        // Jika checkbox publish dicentang, set published_at
-        if ($request->has('is_published') && !$pengumuman->is_published) {
+        if ($request->has('is_published')) {
             $data['is_published'] = true;
-            $data['published_at'] = now();
-        } elseif (!$request->has('is_published') && $pengumuman->is_published) {
+            if (!$pengumuman->is_published) {
+                $data['published_at'] = now();
+            }
+        } else {
             $data['is_published'] = false;
             $data['published_at'] = null;
         }

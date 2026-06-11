@@ -11,7 +11,7 @@ class JadwalController extends Controller
     // Menampilkan daftar jadwal
     public function index()
     {
-        $jadwal = JadwalPPDB::latest()->paginate(10);
+        $jadwal = JadwalPPDB::oldest()->paginate(10);
         return view('admin.jadwal.index', compact('jadwal'));
     }
 
@@ -29,6 +29,13 @@ class JadwalController extends Controller
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
             'keterangan' => 'nullable|string'
+        ], [
+            'nama_kegiatan.required' => 'Nama kegiatan wajib diisi.',
+            'tanggal_mulai.required' => 'Tanggal mulai wajib diisi.',
+            'tanggal_mulai.date' => 'Format tanggal mulai tidak valid.',
+            'tanggal_selesai.required' => 'Tanggal selesai wajib diisi.',
+            'tanggal_selesai.date' => 'Format tanggal selesai tidak valid.',
+            'tanggal_selesai.after_or_equal' => 'Tanggal selesai harus setelah atau sama dengan tanggal mulai.',
         ]);
 
         JadwalPPDB::create($request->all());
@@ -51,6 +58,13 @@ class JadwalController extends Controller
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
             'keterangan' => 'nullable|string'
+        ], [
+            'nama_kegiatan.required' => 'Nama kegiatan wajib diisi.',
+            'tanggal_mulai.required' => 'Tanggal mulai wajib diisi.',
+            'tanggal_mulai.date' => 'Format tanggal mulai tidak valid.',
+            'tanggal_selesai.required' => 'Tanggal selesai wajib diisi.',
+            'tanggal_selesai.date' => 'Format tanggal selesai tidak valid.',
+            'tanggal_selesai.after_or_equal' => 'Tanggal selesai harus setelah atau sama dengan tanggal mulai.',
         ]);
 
         $jadwal->update($request->all());

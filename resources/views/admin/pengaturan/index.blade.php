@@ -19,6 +19,7 @@
             </div>
         @endif
 
+        {{-- ==================== FORM PENGATURAN UTAMA ==================== --}}
         <form action="{{ route('admin.pengaturan.update') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
             @csrf
 
@@ -82,7 +83,7 @@
                         <label class="block text-sm font-semibold text-gray-700 mb-1">Warna Tema</label>
                         <input type="color" name="warna_tema" value="{{ $pengaturan['warna_tema'] ?? '#2563eb' }}" class="w-20 h-10 rounded-lg border border-gray-200 shadow-sm cursor-pointer">
                     </div>
-                    <div class="md:col-span-2">
+                    <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1">Info PPDB (running text)</label>
                         <input type="text" name="info_ppdb" value="{{ $pengaturan['info_ppdb'] ?? 'Pendaftaran dibuka 1 April - 30 Juni 2025' }}" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-400 transition shadow-sm">
                     </div>
@@ -99,7 +100,7 @@
                         <label class="block text-sm font-semibold text-gray-700 mb-1">Sejarah Sekolah</label>
                         <textarea name="sejarah" rows="4" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-400 transition shadow-sm">{{ $pengaturan['sejarah'] ?? '' }}</textarea>
                     </div>
-                    <div class="grid md:grid-cols-2 gap-5">
+                    <div class="grid md:grid-cols-3 gap-5">
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1"><i class="fas fa-bullseye text-blue-500 mr-1"></i> Visi Sekolah</label>
                             <textarea name="visi" rows="4" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-400 transition shadow-sm" placeholder="Masukkan pernyataan Visi sekolah...">{{ $pengaturan['visi'] ?? '' }}</textarea>
@@ -108,6 +109,11 @@
                             <label class="block text-sm font-semibold text-gray-700 mb-1"><i class="fas fa-list-check text-cyan-500 mr-1"></i> Misi Sekolah</label>
                             <textarea name="misi" rows="4" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-400 transition shadow-sm" placeholder="Masukkan poin-poin Misi sekolah (satu per baris)...">{{ $pengaturan['misi'] ?? '' }}</textarea>
                             <p class="text-xs text-gray-400 mt-1"><i class="fas fa-info-circle"></i> Tulis setiap poin misi dalam baris baru untuk tampil sebagai daftar.</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1"><i class="fas fa-flag text-indigo-500 mr-1"></i> Tujuan Sekolah</label>
+                            <textarea name="tujuan" rows="4" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-400 transition shadow-sm" placeholder="Masukkan poin-poin Tujuan sekolah (satu per baris)...">{{ $pengaturan['tujuan'] ?? '' }}</textarea>
+                            <p class="text-xs text-gray-400 mt-1"><i class="fas fa-info-circle"></i> Tulis setiap poin tujuan dalam baris baru untuk tampil sebagai daftar.</p>
                         </div>
                     </div>
                 </div>
@@ -118,7 +124,7 @@
                 <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
                     <i class="fas fa-image text-blue-500"></i> Logo & Banner
                 </h3>
-                <div class="grid md:grid-cols-3 gap-6">
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1">Logo Sekolah</label>
                         @if(isset($pengaturan['logo']) && $pengaturan['logo'])
@@ -146,6 +152,15 @@
                         @endif
                         <input type="file" name="banner_home" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-400 transition shadow-sm" accept="image/*">
                     </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Banner 2</label>
+                        @if(isset($pengaturan['banner_2']) && $pengaturan['banner_2'])
+                            <div class="mb-3 p-2 bg-white rounded-xl inline-block shadow-sm">
+                                <img src="{{ Storage::url($pengaturan['banner_2']) }}" class="h-16 w-auto object-cover">
+                            </div>
+                        @endif
+                        <input type="file" name="banner_2" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-400 transition shadow-sm" accept="image/*">
+                    </div>
                 </div>
             </div>
 
@@ -157,6 +172,9 @@
                 </button>
             </div>
         </form>
+        {{-- ==================== END FORM PENGATURAN UTAMA ==================== --}}
+
+
     </div>
 </div>
 @endsection
