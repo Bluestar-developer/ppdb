@@ -1,11 +1,11 @@
 # 🚀 **PPDB Online – SMK ICB Cinta Teknika**
 
 <div align="center">
-  <img src="https://img.shields.io/github/actions/workflow/status/BlueDev/ppdb/laravel.yml?style=for-the-badge&logo=github&label=Build" alt="Build Status" />
-  <img src="https://img.shields.io/github/license/BlueDev/ppdb?style=for-the-badge&logo=opensourceinitiative" alt="License" />
-  <img src="https://img.shields.io/github/v/release/BlueDev/ppdb?style=for-the-badge&logo=github" alt="Release" />
+  <img src="https://img.shields.io/github/actions/workflow/status/Bluestar-developer/ppdb/laravel.yml?style=for-the-badge&logo=github&label=Build" alt="Build Status" />
+  <img src="https://img.shields.io/github/license/Bluestar-developer/ppdb?style=for-the-badge&logo=opensourceinitiative" alt="License" />
+  <img src="https://img.shields.io/github/v/release/Bluestar-developer/ppdb?style=for-the-badge&logo=github" alt="Release" />
   <img src="https://img.shields.io/badge/Laravel-12-red?style=for-the-badge&logo=laravel" alt="Laravel" />
-  <img src="https://img.shades.io/badge/PHP-8.2-777BB4?style=for-the-badge&logo=php" alt="PHP" />
+  <img src="https://img.shields.io/badge/PHP-8.2-777BB4?style=for-the-badge&logo=php" alt="PHP" />
   <img src="https://img.shields.io/badge/Tailwind%20CSS-3.4-06B6D4?style=for-the-badge&logo=tailwindcss" alt="Tailwind" />
   <img src="https://img.shields.io/badge/Midtrans-Payment-0060FF?style=for-the-badge&logo=visa" alt="Midtrans" />
 </div>
@@ -22,14 +22,28 @@ Selamat datang di **PPDB Online** – aplikasi web yang bikin proses pendaftaran
 
 ## ✨ Apa yang Keren?
 
+### Fitur Siswa
 - **Registrasi multi‑step** dengan validasi real‑time.
 - **Upload dokumen** (foto, KK, rapor, dll) sekaligus.
 - **Pembayaran online** via Midtrans (QRIS, VA, e‑wallet).
 - **Dashboard siswa**: lihat status, jadwal, pengumuman, dan galeri.
+- **Notifikasi real‑time** untuk status pendaftaran.
+- **Search & filter** jurusan.
+- **Animasi 3D Tilt** pada kartu jurusan.
+- **Scroll Reveal & Float Animation** untuk tampilan dinamis.
+- **Gradient Shine** efek pada elemen UI.
+- **Responsive design** dengan grid bento‑box.
+- **Pengumuman ticker** dengan animasi.
+
+### Fitur Admin
 - **Admin panel**: CRUD lengkap untuk jurusan, pengumuman, jadwal, galeri, dan verifikasi berkas.
 - **Manajemen kuota** per jurusan.
 - **Ekspor laporan** ke Excel / PDF.
 - **Setting tema & konfigurasi** (logo, warna, kontak, dll).
+- **Pengelolaan pengguna** (admin & siswa).
+- **Monitoring pembayaran** via Midtrans.
+- **Pengaturan notifikasi** sistem.
+- **Audit log** aktivitas admin.
 
 ---
 
