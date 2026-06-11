@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Pengumuman;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Carbon;
 
 class PengumumanController extends Controller
 {
@@ -52,7 +53,7 @@ class PengumumanController extends Controller
 
         if ($request->has('is_published')) {
             $data['is_published'] = true;
-            $data['published_at'] = now();
+            $data['published_at'] = Carbon::now();
         } else {
             $data['is_published'] = false;
             $data['published_at'] = null;
@@ -104,7 +105,7 @@ class PengumumanController extends Controller
         if ($request->has('is_published')) {
             $data['is_published'] = true;
             if (!$pengumuman->is_published) {
-                $data['published_at'] = now();
+                $data['published_at'] = Carbon::now();
             }
         } else {
             $data['is_published'] = false;
@@ -134,7 +135,7 @@ class PengumumanController extends Controller
     {
         $pengumuman->is_published = !$pengumuman->is_published;
         if ($pengumuman->is_published) {
-            $pengumuman->published_at = now();
+            $pengumuman->published_at = Carbon::now();
         } else {
             $pengumuman->published_at = null;
         }
