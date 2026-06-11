@@ -179,29 +179,49 @@
             overflow: hidden;
             animation: float 6s ease-in-out infinite;
         }
+
         .card-tilt:hover {
             transform: rotateY(5deg) rotateX(5deg);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
         }
+
         .card-tilt::before {
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(135deg, rgba(255,255,255,0.3), transparent);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), transparent);
             opacity: 0;
             transition: opacity 0.3s ease;
             pointer-events: none;
         }
+
         .card-tilt:hover::before {
             opacity: 1;
         }
+
         @keyframes float {
-            0%,100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-8px);
+            }
         }
+
         /* Scroll reveal */
-        .reveal { opacity: 0; transform: translateY(20px); transition: all 0.6s ease; }
-        .reveal-visible { opacity: 1; transform: none; }
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+        }
+
+        .reveal-visible {
+            opacity: 1;
+            transform: none;
+        }
     </style>
 </head>
 
@@ -624,7 +644,8 @@
                 <div class="bg-white rounded-2xl p-6 shadow-sm">
                     <h3 class="text-2xl font-bold flex items-center gap-2"><i
                             class="fas fa-calendar-alt text-blue-500"></i> Jadwal PPDB
-                        {{ date('Y') }}/{{ date('Y') + 1 }}</h3>
+                        {{ date('Y') }}/{{ date('Y') + 1 }}
+                    </h3>
                     <div class="overflow-x-auto mt-6">
                         <table class="min-w-full text-sm">
                             <thead class="border-b">
@@ -768,7 +789,7 @@
     </script>
     <script>
         // Scroll reveal using IntersectionObserver (moved from head)
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const revealElements = document.querySelectorAll('.reveal');
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
@@ -782,4 +803,5 @@
         });
     </script>
 </body>
+
 </html>

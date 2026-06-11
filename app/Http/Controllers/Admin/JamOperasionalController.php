@@ -12,13 +12,13 @@ class JamOperasionalController extends Controller
     public function index()
     {
         $jamOperasional = JamOperasionalPPDB::orderBy('id', 'asc')->paginate(10);
-        return view('admin.jam_operasional.index', compact('jamOperasional'));
+        return view('admin.jam operasional.index', compact('jamOperasional'));
     }
 
     // Form tambah jam operasional
     public function create()
     {
-        return view('admin.jam_operasional.create');
+        return view('admin.jam operasional.create');
     }
 
     // Simpan jam operasional baru
@@ -50,7 +50,7 @@ class JamOperasionalController extends Controller
     public function edit($id)
     {
         $jam = JamOperasionalPPDB::findOrFail($id);
-        return view('admin.jam_operasional.edit', compact('jam'));
+        return view('admin.jam operasional.edit', compact('jam'));
     }
 
     // Update jam operasional
