@@ -27,43 +27,48 @@
             gap: 12px;
             padding: 12px 16px;
             margin: 4px 12px;
-            border-radius: 12px;
+            border-radius: 14px;
             color: #475569;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            font-weight: 500;
+            transition: all 0.3s ease;
+            font-weight: 600;
         }
         .sidebar-item i {
             width: 24px;
-            font-size: 1.2rem;
+            font-size: 1.15rem;
         }
         .sidebar-item:hover {
-            background: linear-gradient(95deg, #eff6ff, #e0e7ff);
-            color: #1e40af;
+            background: rgba(59, 130, 246, 0.12);
+            color: #1d4ed8;
         }
         .sidebar-item.active {
-            background: linear-gradient(95deg, #2563eb, #1e40af);
+            background: linear-gradient(95deg, #2563eb, #1d4ed8);
             color: white;
-            box-shadow: 0 8px 16px -4px rgba(37,99,235,0.2);
+            box-shadow: 0 12px 24px -12px rgba(37, 99, 235, 0.35);
         }
         .sidebar-item.active i {
             color: white;
         }
         .card-dashboard {
             background: white;
-            border-radius: 1.5rem;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.03), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
-            border: 1px solid #f0f2f5;
+            border-radius: 1.75rem;
+            box-shadow: 0 20px 45px -25px rgba(15, 23, 42, 0.15), 0 8px 20px -10px rgba(15, 23, 42, 0.08);
+            border: 1px solid #eef2ff;
         }
-        .stat-card {
+        .admin-card {
             background: white;
-            border-radius: 1.25rem;
-            border-left: 4px solid;
-            transition: all 0.2s;
+            border-radius: 1.75rem;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 20px 45px -25px rgba(15, 23, 42, 0.1);
         }
-        .stat-card:hover {
+        .admin-card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .admin-card-hover:hover {
             transform: translateY(-3px);
+            box-shadow: 0 24px 50px -26px rgba(15, 23, 42, 0.15);
         }
     </style>
+    @stack('styles')
 </head>
 <body class="bg-gray-50 font-sans antialiased">
     <div x-data="{ sidebarOpen: true }" class="flex h-screen overflow-hidden">
@@ -167,7 +172,12 @@
         <!-- Main Content -->
         <div class="flex-1 flex flex-col overflow-y-auto">
             <header class="bg-white/80 backdrop-blur-sm shadow-sm sticky top-0 z-10 border-b border-gray-100 px-6 py-4">
-                <h1 class="text-xl font-semibold text-gray-800">@yield('title')</h1>
+                <div class="max-w-7xl mx-auto">
+                    <h1 class="text-xl font-semibold text-gray-800">@yield('title')</h1>
+                    @if(trim($__env->yieldContent('subtitle')))
+                        <p class="text-sm text-gray-500 mt-1">@yield('subtitle')</p>
+                    @endif
+                </div>
             </header>
             <main class="p-6 md:p-8">
                 @yield('content')

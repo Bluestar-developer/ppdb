@@ -39,11 +39,20 @@ class StudentController extends Controller
         return redirect()->route('student.beranda');
     }
 
+    protected function currentUser(): User
+    {
+        $user = Auth::user();
+        if (!$user instanceof User) {
+            abort(403, 'Unauthorized action.');
+        }
+        return $user;
+    }
+
     // ==================== PENDAFTARAN PUBLIK & AUTHENTICATED ====================
     public function showRegistrationForm()
     {
-        if (auth()->check()) {
-            $user = auth()->user();
+        if (Auth::check()) {
+            $user = $this->currentUser();
             if ($user->registration) {
                 return redirect()->route('student.status')->with('info', 'Anda sudah melakukan pendaftaran.');
             }
@@ -54,7 +63,7 @@ class StudentController extends Controller
 
     public function storeRegistration(Request $request)
     {
-        $isPublic = !auth()->check();
+        $isPublic = !Auth::check();
 
         // Validation rules
         $rules = [
@@ -94,7 +103,7 @@ class StudentController extends Controller
 
             Auth::login($user);
         } else {
-            $user = Auth::user();
+            $user = $this->currentUser();
             
             // Update user profile if authenticated
             $user->update([
@@ -133,7 +142,7 @@ class StudentController extends Controller
     // ==================== AUTHENTICATED REGISTRATION FORM ====================
     public function createRegistration()
     {
-        if (Auth::user()->registration) {
+        if (Auth::check() && $this->currentUser()->registration) {
             return redirect()->route('student.dashboard')->with('error', 'Anda sudah mendaftar.');
         }
         $jurusan = Jurusan::where('is_active', true)->get();
@@ -143,16 +152,16 @@ class StudentController extends Controller
     // ==================== UPLOAD BERKAS ====================
     public function uploadIndex()
     {
-        $registration = Auth::user()->registration;
+        $registration = $this->currentUser()->registration;
         if (!$registration) {
             return redirect()->route('student.register')->with('error', 'Silakan daftar terlebih dahulu.');
         }
         return view('student.upload', compact('registration'));
     }
 
-    public function uploadFile(Request $request, $type)
+    public function uploadFile(Request $request, string $type)
     {
-        $registration = Auth::user()->registration;
+        $registration = $this->currentUser()->registration;
         $allowedTypes = ['foto', 'kk', 'akta', 'rapor', 'surat_lulus'];
         if (!in_array($type, $allowedTypes)) {
             return back()->with('error', 'Tipe berkas tidak valid.');
@@ -174,9 +183,9 @@ class StudentController extends Controller
         return back()->with('success', 'Berkas berhasil diunggah.');
     }
 
-    public function deleteFile($type)
+    public function deleteFile(string $type)
     {
-        $registration = Auth::user()->registration;
+        $registration = $this->currentUser()->registration;
         if ($registration->$type && Storage::disk('public')->exists($registration->$type)) {
             Storage::disk('public')->delete($registration->$type);
             $registration->update([$type => null]);
@@ -187,7 +196,7 @@ class StudentController extends Controller
     // ==================== PROFIL SISWA ====================
     public function profile()
     {
-        $user = Auth::user();
+        $user = $this->currentUser();
         $registration = $user->registration;
         $jurusan = Jurusan::where('is_active', true)->get();
         return view('student.profile', compact('user', 'registration', 'jurusan'));
@@ -195,7 +204,7 @@ class StudentController extends Controller
 
     public function updateProfile(Request $request)
     {
-        $user = Auth::user();
+        $user = $this->currentUser();
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
@@ -211,14 +220,14 @@ class StudentController extends Controller
             'current_password' => 'required|current_password',
             'password' => 'required|confirmed|min:8',
         ]);
-        Auth::user()->update(['password' => Hash::make($request->password)]);
+        $this->currentUser()->update(['password' => Hash::make($request->password)]);
         return back()->with('success', 'Password berhasil diubah.');
     }
 
     // ==================== STATUS PENDAFTARAN ====================
     public function status()
     {
-        $registration = Auth::user()->registration;
+        $registration = $this->currentUser()->registration;
         if (!$registration) {
             return redirect()->route('student.register')->with('error', 'Anda belum mendaftar.');
         }
@@ -247,7 +256,7 @@ class StudentController extends Controller
     // ==================== BUKTI PENDAFTARAN ====================
     public function bukti()
     {
-        $registration = Auth::user()->registration;
+        $registration = $this->currentUser()->registration;
         if (!$registration) {
             return redirect()->route('student.register')->with('error', 'Anda belum mendaftar.');
         }
@@ -257,7 +266,7 @@ class StudentController extends Controller
 
     public function downloadBukti()
     {
-        $registration = Auth::user()->registration;
+        $registration = $this->currentUser()->registration;
         $pdf = Pdf::loadView('student.bukti-pdf', compact('registration'));
         return $pdf->download('bukti_pendaftaran_' . $registration->registration_number . '.pdf');
     }

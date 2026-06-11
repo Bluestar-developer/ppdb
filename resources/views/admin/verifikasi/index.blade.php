@@ -31,10 +31,10 @@
                 </select>
             </div>
             <div class="md:col-span-4 flex gap-3">
-                <button type="submit" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-5 py-2.5 rounded-xl text-sm font-medium shadow-md transition transform hover:scale-105 flex items-center gap-2">
+                <button type="submit" class="btn-premium flex-1 justify-center flex items-center gap-2">
                     <i class="fas fa-filter"></i> Filter
                 </button>
-                <a href="{{ route('admin.verifikasi.index') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-5 py-2.5 rounded-xl text-sm font-medium transition shadow-md flex items-center gap-2">
+                <a href="{{ route('admin.verifikasi.index') }}" class="btn-outline-premium flex-1 justify-center flex items-center gap-2">
                     <i class="fas fa-undo-alt"></i> Reset
                 </a>
             </div>
@@ -91,4 +91,52 @@
         </div>
     </div>
 </div>
+@push('styles')
+<style>
+    .btn-premium {
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(135deg, #2563eb, #4f46e5);
+        color: white;
+        padding: 0.625rem 1.25rem;
+        border-radius: 0.875rem;
+        font-weight: 700;
+        font-size: 0.875rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 14px 0 rgba(37, 99, 235, 0.25);
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .btn-premium:hover {
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0 8px 25px 0 rgba(37, 99, 235, 0.35);
+        background: linear-gradient(135deg, #1d4ed8, #4338ca);
+    }
+    .btn-premium:active { transform: translateY(0) scale(0.98); }
+
+    .btn-outline-premium {
+        background: transparent;
+        color: #475569;
+        border: 1.5px solid #e2e8f0;
+        padding: 0.625rem 1.25rem;
+        border-radius: 0.875rem;
+        font-weight: 700;
+        font-size: 0.875rem;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .btn-outline-premium:hover {
+        border-color: #2563eb;
+        background: rgba(37, 99, 235, 0.05);
+        color: #2563eb;
+        transform: translateY(-2px);
+    }
+</style>
+@endpush
+
 @endsection

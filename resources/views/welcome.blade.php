@@ -1,807 +1,943 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="scroll-smooth">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>PPDB | SMK ICB Cinta Teknika</title>
-    <!-- Fonts -->
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap"
-        rel="stylesheet">
+
+    <!-- Font & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
     <style>
         :root {
-            --color-primary:
-                {{ $pengaturan['warna_tema'] ?? '#2563eb' }}
-            ;
+            --primary: {{ $pengaturan['warna_tema'] ?? '#4361ee' }};
+            --primary-soft: color-mix(in srgb, var(--primary) 10%, white);
+            --primary-dark: color-mix(in srgb, var(--primary) 80%, black);
+            --surface: rgba(255,255,255,0.65);
+            --surface-border: rgba(255,255,255,0.5);
+            --text: #0f172a;
+            --text-secondary: #475569;
+            --radius-2xl: 2rem;
+            --radius-xl: 1.5rem;
+            --radius-lg: 1rem;
+            --shadow-glass: 0 25px 50px -12px rgba(0,0,0,0.15);
+            --shadow-card: 0 10px 30px -8px rgba(0,0,0,0.08);
+            --transition: 0.3s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
-        * {
-            font-family: 'Inter', sans-serif;
-        }
-
+        * { margin:0; padding:0; box-sizing:border-box; }
         body {
-            background-color: #f8fafc;
+            font-family: 'Inter', sans-serif;
+            background: #f5f7fe;
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
         }
 
-        .card-modern {
-            background: white;
-            border-radius: 1.5rem;
-            box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
+        /* Glassmorphism base */
+        .glass {
+            background: var(--surface);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--surface-border);
         }
 
-        .card-modern:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.1);
+        /* ===== NAVIGATION ===== */
+        .navbar {
+            position: fixed;
+            top: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 95%;
+            max-width: 1400px;
+            z-index: 1000;
+            border-radius: 100px;
+            padding: 0.8rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255,255,255,0.5);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255,255,255,0.6);
+            box-shadow: 0 20px 40px -15px rgba(0,0,0,0.08);
+            transition: var(--transition);
         }
-
-        .btn-primary {
-            background: var(--color-primary);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: .75rem;
+        .navbar.scrolled {
+            background: rgba(255,255,255,0.8);
+            box-shadow: 0 25px 50px -15px rgba(0,0,0,0.12);
+        }
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 800;
+            font-size: 1.3rem;
+            color: var(--text);
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+        .nav-brand img {
+            height: 40px;
+            width: auto;
+            border-radius: 12px;
+        }
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+        .nav-links a {
+            text-decoration: none;
+            font-weight: 500;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            position: relative;
+            transition: color 0.2s;
+        }
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        .nav-links a:hover { color: var(--primary); }
+        .nav-links a:hover::before { width: 70%; }
+        .nav-actions {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+        .btn {
+            padding: 0.7rem 1.8rem;
+            border-radius: 100px;
             font-weight: 600;
-            transition: transform .2s, background .2s;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: none;
+            cursor: pointer;
         }
-
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid rgba(0,0,0,0.1);
+            color: var(--text);
+        }
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: var(--primary-soft);
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 10px 25px -8px var(--primary);
+        }
         .btn-primary:hover {
-            transform: scale(1.04);
-            background: color-mix(in srgb, var(--color-primary) 85%, black);
+            transform: translateY(-3px);
+            box-shadow: 0 20px 35px -12px var(--primary);
+            background: var(--primary-dark);
+        }
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text);
         }
 
-        background: linear-gradient(105deg, var(--color-primary) 0%, color-mix(in srgb, var(--color-primary) 80%, black) 100%);
-        box-shadow: 0 8px 20px -6px color-mix(in srgb, var(--color-primary) 50%, transparent);
+        /* ===== HERO 2026 ===== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 8rem 0 4rem;
+            position: relative;
+            background: #0f172a;
         }
-
-        .btn-gradient:hover {
-            transform: scale(1.02);
-        }
-
-        .text-gradient-primary {
-            background: linear-gradient(135deg, var(--color-primary), #06b6d4);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .tab-light {
-            border-bottom: 3px solid transparent;
-            transition: 0.2s;
-        }
-
-        .tab-light.active {
-            border-bottom-color: var(--color-primary);
-            color: var(--color-primary);
-        }
-
         .hero-bg {
-            background: linear-gradient(135deg, #eff6ff 0%, #ffffff 50%, #f0f9ff 100%);
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.55;
+        }
+        .hero-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
+        }
+        .hero-content {
+            max-width: 700px;
+        }
+        .hero-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 0.5rem 1.5rem;
+            border-radius: 100px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #fff;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 4.2rem);
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: -0.04em;
+            margin-bottom: 1.5rem;
+            color: #fff;
+        }
+        .hero-title span {
+            color: #93c5fd;
+            background: none;
+            -webkit-background-clip: unset;
+            -webkit-text-fill-color: unset;
+        }
+        .hero-text {
+            font-size: 1.15rem;
+            color: rgba(255,255,255,0.85);
+            max-width: 550px;
+            margin-bottom: 2.5rem;
+            line-height: 1.7;
+        }
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+        .hero-actions .btn {
+            font-size: 0.95rem;
+            padding: 0.8rem 2rem;
+        }
+        .hero-stats {
+            display: flex;
+            gap: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.15);
+        }
+        .hero-stat h3 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #fff;
+        }
+        .hero-stat p {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
         }
 
-        /* Premium Announcement Ticker */
-        .ticker-section {
-            background: linear-gradient(90deg, color-mix(in srgb, var(--color-primary) 6%, #f8fafc) 0%, color-mix(in srgb, var(--color-primary) 12%, #f8fafc) 50%, color-mix(in srgb, var(--color-primary) 6%, #f8fafc) 100%);
-            border-top: 1px solid color-mix(in srgb, var(--color-primary) 15%, #e2e8f0);
-            border-bottom: 1px solid color-mix(in srgb, var(--color-primary) 15%, #e2e8f0);
+        /* ===== TICKER SLIM ===== */
+        .ticker-bar {
+            background: rgba(255,255,255,0.6);
+            backdrop-filter: blur(15px);
+            border-top: 1px solid rgba(0,0,0,0.04);
+            border-bottom: 1px solid rgba(0,0,0,0.04);
+            padding: 0.8rem 0;
             position: relative;
             overflow: hidden;
         }
-
-        .ticker-section::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 120px;
-            background: linear-gradient(90deg, color-mix(in srgb, var(--color-primary) 6%, #f8fafc), transparent);
-            z-index: 2;
-            pointer-events: none;
-        }
-
-        .ticker-section::after {
-            content: '';
-            position: absolute;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            width: 120px;
-            background: linear-gradient(-90deg, color-mix(in srgb, var(--color-primary) 6%, #f8fafc), transparent);
-            z-index: 2;
-            pointer-events: none;
-        }
-
-        .ticker-label {
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            display: flex;
-            align-items: center;
-            padding: 0 1.25rem 0 1rem;
-            background: var(--color-primary);
-            font-size: 0.75rem;
-            font-weight: 800;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: white;
-            z-index: 10;
-            clip-path: polygon(0 0, 90% 0, 100% 50%, 90% 100%, 0 100%);
-        }
-
         .ticker-track {
             display: flex;
             width: max-content;
             animation: ticker 30s linear infinite;
-            will-change: transform;
-            white-space: nowrap;
+            gap: 3rem;
         }
-
         .ticker-item {
-            display: inline-flex;
+            display: flex;
             align-items: center;
             gap: 0.75rem;
-            padding: 0 2rem;
-            color: color-mix(in srgb, var(--color-primary) 70%, #1e293b);
-            font-size: 0.85rem;
-            font-weight: 600;
+            font-weight: 500;
+            color: #334155;
+            white-space: nowrap;
         }
-
-        .ticker-item .dot {
+        .ticker-dot {
             width: 6px;
             height: 6px;
+            background: var(--primary);
             border-radius: 50%;
-            background: var(--color-primary);
-            flex-shrink: 0;
-            box-shadow: 0 0 8px var(--color-primary);
+            box-shadow: 0 0 12px var(--primary);
         }
-
         @keyframes ticker {
-            0% {
-                transform: translate3d(0, 0, 0);
-            }
-
-            100% {
-                transform: translate3d(-50%, 0, 0);
-            }
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
         }
-    </style>
-    <style>
-        /* Tilt, float, gradient shine */
-        .card-tilt {
-            perspective: 1000px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+        /* ===== SECTIONS ===== */
+        .section {
+            padding: 7rem 2rem;
             position: relative;
+        }
+        .section-container {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+        .section-label {
+            display: inline-block;
+            background: var(--primary-soft);
+            color: var(--primary);
+            padding: 0.5rem 1.5rem;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+        .section-heading {
+            font-size: clamp(2.4rem, 5vw, 3.5rem);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 1rem;
+        }
+
+        /* ===== CARDS MODERN ===== */
+        .card-glass {
+            background: rgba(255,255,255,0.5);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.6);
+            border-radius: var(--radius-2xl);
+            padding: 2rem;
+            transition: var(--transition);
+            box-shadow: 0 10px 25px -8px rgba(0,0,0,0.05);
+        }
+        .card-glass:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 30px 45px -15px rgba(0,0,0,0.12);
+            background: rgba(255,255,255,0.7);
+        }
+        .jurusan-card {
+            border-radius: var(--radius-2xl);
             overflow: hidden;
-            animation: float 6s ease-in-out infinite;
+            background: white;
+            box-shadow: var(--shadow-card);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+        .jurusan-card:hover {
+            transform: translateY(-10px) rotateX(4deg) rotateY(-2deg);
+            box-shadow: 0 40px 60px -20px rgba(0,0,0,0.2);
+        }
+        .jurusan-img {
+            height: 220px;
+            object-fit: cover;
+            width: 100%;
+            transition: 0.5s;
+        }
+        .jurusan-card:hover .jurusan-img {
+            transform: scale(1.05);
+        }
+        .jurusan-body {
+            padding: 1.8rem;
+            position: relative;
+            background: white;
+            z-index: 2;
+        }
+        .jurusan-badge {
+            background: var(--primary);
+            color: white;
+            font-weight: 800;
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            display: inline-block;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+            box-shadow: 0 8px 15px -5px var(--primary);
         }
 
-        .card-tilt:hover {
-            transform: rotateY(5deg) rotateX(5deg);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+        /* Steps */
+        .step-item {
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+        .step-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary-soft);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.3rem;
+            margin: 0 auto 1.2rem;
+            transition: 0.3s;
+        }
+        .step-item:hover .step-circle {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.1);
         }
 
-        .card-tilt::before {
-            content: '';
+        /* Gallery */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-auto-rows: 250px;
+            grid-auto-flow: dense;
+            gap: 1.5rem;
+        }
+        .gallery-card:nth-child(4n+1) {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+        @media (max-width: 768px) {
+            .gallery-grid { grid-template-columns: 1fr 1fr; grid-auto-rows: 200px; }
+            .gallery-card:nth-child(4n+1) { grid-column: span 1; grid-row: span 1; }
+        }
+        .gallery-card {
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            position: relative;
+            aspect-ratio: 4/3;
+            cursor: pointer;
+        }
+        .gallery-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s;
+        }
+        .gallery-card:hover img {
+            transform: scale(1.1);
+        }
+        .gallery-overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), transparent);
+            background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
             opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
+            transition: 0.4s;
+            display: flex;
+            align-items: flex-end;
+            padding: 1.5rem;
         }
-
-        .card-tilt:hover::before {
+        .gallery-card:hover .gallery-overlay {
             opacity: 1;
         }
 
-        @keyframes float {
-
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-8px);
-            }
+        /* Contact Map */
+        .map-frame {
+            border-radius: var(--radius-2xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-glass);
+            height: 350px;
         }
 
-        /* Scroll reveal */
-        .reveal {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.6s ease;
+        /* Footer */
+        .footer-modern {
+            background: #0b1120;
+            color: #94a3b8;
+            padding: 3rem 2rem;
+            text-align: center;
         }
 
-        .reveal-visible {
-            opacity: 1;
-            transform: none;
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar {
+                width: 95%;
+                padding: 0.8rem 1.5rem;
+            }
+            .nav-links {
+                display: none;
+            }
+            .mobile-toggle {
+                display: block;
+            }
+            .hero-container {
+                grid-template-columns: 1fr;
+            }
+            .hero-visual {
+                order: -1;
+            }
+            .section {
+                padding: 4rem 1.5rem;
+            }
         }
     </style>
 </head>
+<body>
 
-<body class="antialiased">
-
-    <nav class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-200 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <div class="flex items-center space-x-3">
-                    @if(isset($pengaturan['logo']) && Storage::disk('public')->exists($pengaturan['logo']))
-                        <img src="{{ Storage::url($pengaturan['logo']) }}" alt="Logo SMK ICB"
-                            class="w-10 h-10 object-contain drop-shadow-sm">
-                    @else
-                        <div
-                            class="w-9 h-9 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-md">
-                            <i class="fas fa-laptop-code text-white text-sm"></i>
-                        </div>
-                    @endif
-                    <span
-                        class="font-extrabold text-gray-800 text-lg">{{ $pengaturan['nama_sekolah'] ?? 'SMK ICB Cinta Teknika' }}</span>
-                </div>
-                <div class="hidden md:flex space-x-8 text-gray-700 font-medium">
-                    <a href="#home" class="text-gray-600 hover:text-blue-600 transition">Beranda</a>
-                    <a href="#profil" class="hover:text-blue-600 transition">Profil</a>
-                    <a href="#jurusan" class="hover:text-blue-600 transition">Jurusan</a>
-                    <a href="#alur" class="hover:text-blue-600 transition">Alur</a>
-                    <a href="#info" class="hover:text-blue-600 transition">Info & Jadwal</a>
-                    <a href="#kontak" class="hover:text-blue-600 transition">Kontak</a>
-                </div>
-                <div class="flex items-center space-x-4">
-                    @auth
-                        <a href="{{ url('/dashboard') }}"
-                            class="px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-700 transition shadow-md">Dashboard</a>
-                    @else
-                        <a href="{{ route('login') }}" class="text-gray-600 hover:text-blue-600 font-medium">Login Siswa</a>
-                        <a href="{{ route('register') }}"
-                            class="px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-700 transition shadow-md">Daftar</a>
-                        <a href="{{ url('/admin/login') }}"
-                            class="px-4 py-2 bg-gray-800 text-white rounded-xl text-sm font-semibold hover:bg-gray-900 transition shadow-md"><i
-                                class="fas fa-user-shield mr-1"></i> Admin</a>
-                    @endauth
-                </div>
-                <div class="md:hidden">
-                    <button id="mobileMenuBtn" class="text-gray-700 text-2xl"><i class="fas fa-bars"></i></button>
-                </div>
-            </div>
+    <!-- ===== NAVIGATION GLASS ===== -->
+    <nav class="navbar" id="navbar">
+        <a href="#" class="nav-brand">
+            @if(isset($pengaturan['logo']) && Storage::disk('public')->exists($pengaturan['logo']))
+                <img src="{{ Storage::url($pengaturan['logo']) }}" alt="Logo">
+            @else
+                <div style="width:40px;height:40px;background:var(--primary);border-radius:12px;display:flex;align-items:center;justify-content:center;color:white;"><i class="fas fa-laptop-code"></i></div>
+            @endif
+            {{ $pengaturan['nama_sekolah'] ?? 'SMK ICB' }}
+        </a>
+        <ul class="nav-links">
+            <li><a href="#beranda">Beranda</a></li>
+            <li><a href="#profil">Profil</a></li>
+            <li><a href="#jurusan">Jurusan</a></li>
+            <li><a href="#alur">Alur</a></li>
+            <li><a href="#info">Info</a></li>
+            <li><a href="#kontak">Kontak</a></li>
+        </ul>
+        <div class="nav-actions">
+            @auth
+                <a href="{{ url('/dashboard') }}" class="btn btn-primary">Dashboard</a>
+            @else
+                <a href="{{ route('login') }}" class="btn btn-outline">Login Siswa</a>
+                <a href="{{ route('register') }}" class="btn btn-primary">Daftar</a>
+            @endauth
+            <button class="mobile-toggle" id="mobileToggle"><i class="fas fa-bars"></i></button>
         </div>
-        <div id="mobileMenu" class="hidden md:hidden bg-white border-t py-3 px-4 space-y-2 shadow-lg">
-            <a href="#home" class="block py-2 text-gray-700 hover:text-blue-600">Beranda</a>
-            <a href="#profil" class="block py-2 text-gray-700 hover:text-blue-600">Profil</a>
-            <a href="#jurusan" class="block py-2 text-gray-700 hover:text-blue-600">Jurusan</a>
-            <a href="#alur" class="block py-2 text-gray-700 hover:text-blue-600">Alur</a>
-            <a href="#info" class="block py-2 text-gray-700 hover:text-blue-600">Info & Jadwal</a>
-            <a href="#kontak" class="block py-2 text-gray-700 hover:text-blue-600">Kontak</a>
+        <!-- Mobile dropdown -->
+        <div id="mobileMenu" style="display:none; position:absolute; top:100%; left:0; right:0; background:white; backdrop-filter:blur(20px); border-radius:1.5rem; margin-top:0.5rem; padding:1.5rem; flex-direction:column; gap:1rem; box-shadow:0 20px 40px rgba(0,0,0,0.1);">
+            <a href="#beranda" class="mobile-link">Beranda</a>
+            <a href="#profil" class="mobile-link">Profil</a>
+            <a href="#jurusan" class="mobile-link">Jurusan</a>
+            <a href="#alur" class="mobile-link">Alur</a>
+            <a href="#info" class="mobile-link">Info</a>
+            <a href="#kontak" class="mobile-link">Kontak</a>
         </div>
     </nav>
 
-    <!-- ========== HERO SECTION - CERAH & MODERN ========== -->
-    <section id="home" class="hero-bg py-20 md:py-28 relative overflow-hidden">
-        <div
-            class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/diagmonds-light.png')] opacity-30">
-        </div>
-        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid md:grid-cols-2 gap-12 items-center">
-                <div>
-                    <span
-                        class="text-blue-600 font-semibold text-sm tracking-wider uppercase bg-blue-100 px-3 py-1 rounded-full inline-block">PPDB
-                        2025/2026</span>
-                    <h1 class="text-5xl md:text-7xl font-black mt-4 leading-tight">
-                        <span class="text-gray-800">Selamat Datang di</span><br>
-                        <span class="text-gradient-primary">SMK ICB Cinta Teknika</span>
-                    </h1>
-                    <p class="text-gray-600 text-lg mt-4 max-w-lg">Membentuk generasi unggul, kreatif, dan berkarakter
-                        di era digital.</p>
-                    <div class="flex flex-wrap gap-4 mt-8">
-                        <a href="{{ route('register') }}"
-                            class="btn-gradient px-6 py-3 rounded-full font-bold text-white flex items-center gap-2"><i
-                                class="fas fa-arrow-right"></i> Daftar Sekarang</a>
-                        <a href="#alur"
-                            class="border border-blue-300 px-6 py-3 rounded-full font-semibold text-blue-600 hover:bg-blue-50 transition">Lihat
-                            Panduan <i class="fas fa-play ml-1 text-xs"></i></a>
-                    </div>
-                    <div class="mt-8 flex gap-6">
-                        <div><span class="text-2xl font-bold text-blue-600">1.250+</span>
-                            <p class="text-gray-500 text-sm">Siswa</p>
-                        </div>
-                        <div><span class="text-2xl font-bold text-blue-600">5</span>
-                            <p class="text-gray-500 text-sm">Jurusan</p>
-                        </div>
-                        <div><span class="text-2xl font-bold text-blue-600">3.200+</span>
-                            <p class="text-gray-500 text-sm">Alumni</p>
-                        </div>
-                    </div>
+    <!-- ===== HERO ASIMETRIS ===== -->
+    <section id="beranda" class="hero">
+        @if(isset($pengaturan['banner_home']) && Storage::disk('public')->exists($pengaturan['banner_home']))
+            <img src="{{ Storage::url($pengaturan['banner_home']) }}" class="hero-bg" alt="Banner">
+        @else
+            <img src="https://picsum.photos/id/48/1920/1080" class="hero-bg" alt="Hero">
+        @endif
+        <div class="hero-container">
+            <div class="hero-content" data-aos="fade-right">
+                <div class="hero-chip">
+                    <i class="fas fa-rocket"></i> PPDB 2025/2026
                 </div>
-                <div class="relative">
-                    <div class="rounded-2xl overflow-hidden shadow-2xl">
-                        @if(isset($pengaturan['banner_home']) && $pengaturan['banner_home'] && Storage::disk('public')->exists($pengaturan['banner_home']))
-                            <img src="{{ Storage::url($pengaturan['banner_home']) }}" alt="Banner"
-                                class="w-full h-auto object-cover">
-                        @else
-                            <img src="https://picsum.photos/id/48/600/400" alt="Hero" class="w-full h-auto object-cover">
-                        @endif
-                    </div>
-                    <div class="absolute -bottom-5 -left-5 bg-white rounded-xl shadow-lg p-3 border border-gray-100">
-                        <i class="fas fa-quote-left text-blue-400 text-xl"></i>
-                        <p class="text-sm font-medium max-w-xs">Akreditasi A (Unggul)</p>
-                    </div>
+                <h1 class="hero-title">
+                    Wujudkan Masa Depan <br><span>di SMK ICB Cinta Teknika</span>
+                </h1>
+                <div class="hero-actions">
+                    <a href="{{ route('register') }}" class="btn btn-primary">Mulai Pendaftaran <i class="fas fa-arrow-right"></i></a>
+                    <a href="#alur" class="btn btn-outline" style="border-color:rgba(255,255,255,0.4); color:white;">Lihat Panduan</a>
+                </div>
+                <div class="hero-stats">
+                    <div class="hero-stat"><h3>1.250+</h3><p>Siswa</p></div>
+                    <div class="hero-stat"><h3>5</h3><p>Jurusan</p></div>
+                    <div class="hero-stat"><h3>3.200+</h3><p>Alumni</p></div>
                 </div>
             </div>
-        </div>
-        <!-- Wave decoration -->
-        <div class="absolute bottom-0 left-0 w-full overflow-hidden">
-            <svg viewBox="0 0 1200 120" class="relative block w-full h-10 md:h-16" preserveAspectRatio="none">
-                <path
-                    d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z"
-                    fill="#ffffff"></path>
-            </svg>
         </div>
     </section>
 
-    <!-- ========== PREMIUM ANNOUNCEMENT TICKER ========== -->
-    <div class="ticker-section py-3">
-        <div class="ticker-label">&#x1F4E3; INFO</div>
-        <div class="overflow-hidden ml-24">
-            <div class="ticker-track">
-                @php
-                    $infoPpdb = $pengaturan['info_ppdb'] ?? 'Pendaftaran PPDB 2025/2026 Resmi Dibuka — Daftar Sekarang dan Raih Masa Depanmu!';
-                    // Repeat for seamless loop
-                    $items = [
-                        $infoPpdb,
-                        'Pendaftaran online mudah, cepat, dan transparan',
-                        ($pengaturan['nama_sekolah'] ?? 'SMK ICB Cinta Teknika') . ' — Akreditasi A (Unggul)',
-                        count($jurusan) . ' Jurusan Unggulan Tersedia — Pilih Sesuai Minatmu',
-                        'Hubungi kami: ' . ($pengaturan['kontak'] ?? '(022) 7234924'),
-                    ];
-                @endphp
-                @foreach(array_merge($items, $items) as $item)
-                    <span class="ticker-item">
-                        <span class="dot"></span>
-                        {{ $item }}
-                    </span>
-                @endforeach
-            </div>
+    <!-- ===== TICKER ===== -->
+    <div style="margin-top:1.5rem;">
+        <div style="background:#0b1120; color:white; font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; padding:0.6rem 2rem; text-align:center; display:flex; align-items:center; justify-content:center; gap:0.5rem;">
+            <span style="display:inline-block; width:8px; height:8px; background:#ef4444; border-radius:50%; box-shadow:0 0 10px #ef4444;"></span> INFO TERBARU
+        </div>
+    <div class="ticker-bar">
+        <div class="ticker-track">
+            @php
+                $infoPpdb = $pengaturan['info_ppdb'] ?? 'Pendaftaran PPDB 2025/2026 Resmi Dibuka — Daftar Sekarang!';
+                $items = [
+                    $infoPpdb,
+                    'Pendaftaran online mudah, cepat, dan transparan',
+                    ($pengaturan['nama_sekolah'] ?? 'SMK ICB Cinta Teknika') . ' — Akreditasi A',
+                    count($jurusan) . ' Jurusan Unggulan Tersedia',
+                    'Hubungi: ' . ($pengaturan['kontak'] ?? '(022) 7234924'),
+                ];
+            @endphp
+            @foreach(array_merge($items, $items) as $item)
+                <span class="ticker-item"><span class="ticker-dot"></span> {{ $item }}</span>
+            @endforeach
         </div>
     </div>
 
-    <!-- ========== PROFIL SEKOLAH ========== -->
-    <section id="profil" class="py-20 px-4 bg-white">
-        <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-12">
-                <span class="text-blue-600 font-bold uppercase text-sm bg-blue-100 px-3 py-1 rounded-full">About
-                    Us</span>
-                <h2 class="text-4xl md:text-5xl font-black text-gray-800 mt-4">SMK ICB Cinta Teknika</h2>
+    <!-- ===== PROFIL ===== -->
+    <section id="profil" class="section" style="background:white;">
+        <div class="section-container">
+            <div style="text-align:center; margin-bottom:4rem;" data-aos="fade-up">
+                <span class="section-label">Tentang Kami</span>
+                <h2 class="section-heading">SMK ICB Cinta Teknika</h2>
+                <p style="color:#64748b; max-width:650px; margin:0 auto;">Pusat pendidikan vokasi dengan kurikulum industri 4.0, menghasilkan lulusan siap kerja dan technopreneur.</p>
             </div>
-            <div class="grid md:grid-cols-2 gap-12 items-center">
-                <div class="order-2 md:order-1">
-                    <p class="text-gray-600 leading-relaxed text-lg">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:center;">
+                <div data-aos="fade-right">
+                    <p style="font-size:1.1rem; color:#334155; line-height:1.8;">
                         {{ $pengaturan['sejarah'] ?? 'Berdiri sejak 2010, SMK ICB Cinta Teknika berkomitmen menjadi pusat pendidikan vokasi terdepan di Indonesia. Dengan kurikulum berbasis industri 4.0, kami melahirkan lulusan yang siap kerja, technopreneur, dan berdaya saing global.' }}
                     </p>
-                    <div class="mt-6 space-y-3">
-                        <div class="flex items-center gap-3"><i
-                                class="fas fa-check-circle text-blue-500 text-xl"></i><span>Akreditasi A (Unggul) – BAN
-                                SM</span></div>
-                        <div class="flex items-center gap-3"><i
-                                class="fas fa-check-circle text-blue-500 text-xl"></i><span>Kerjasama dengan 50+ DU/DI
-                                nasional & internasional</span></div>
-                        <div class="flex items-center gap-3"><i
-                                class="fas fa-check-circle text-blue-500 text-xl"></i><span>85+ guru profesional &
-                                bersertifikasi</span></div>
-                        <div class="flex items-center gap-3"><i
-                                class="fas fa-check-circle text-blue-500 text-xl"></i><span>Fasilitas laboratorium
-                                modern & teaching factory</span></div>
+                    <div style="margin-top:2rem; display:flex; flex-direction:column; gap:0.8rem;">
+                        <div><i class="fas fa-check-circle" style="color:var(--primary);"></i> Akreditasi A (Unggul) – BAN SM</div>
+                        <div><i class="fas fa-check-circle" style="color:var(--primary);"></i> Kerjasama 50+ DU/DI</div>
+                        <div><i class="fas fa-check-circle" style="color:var(--primary);"></i> 85+ Guru Profesional</div>
+                        <div><i class="fas fa-check-circle" style="color:var(--primary);"></i> Teaching Factory Modern</div>
                     </div>
                 </div>
-                <div class="order-1 md:order-2">
-                    <div class="card-modern p-1">
-                        @if(isset($pengaturan['banner_2']) && $pengaturan['banner_2'] && Storage::disk('public')->exists($pengaturan['banner_2']))
-                            <img src="{{ Storage::url($pengaturan['banner_2']) }}" alt="Profil"
-                                class="rounded-xl w-full object-cover">
+                <div data-aos="fade-left">
+                    <div style="border-radius:2rem; overflow:hidden; box-shadow:0 30px 50px rgba(0,0,0,0.1);">
+                        @if(isset($pengaturan['banner_2']) && Storage::disk('public')->exists($pengaturan['banner_2']))
+                            <img src="{{ Storage::url($pengaturan['banner_2']) }}" style="width:100%; display:block;">
                         @else
-                            <img src="https://picsum.photos/id/20/600/400" alt="Profil" class="rounded-xl w-full">
+                            <img src="https://picsum.photos/id/20/600/400" style="width:100%;">
                         @endif
                     </div>
                 </div>
             </div>
+
             <!-- Visi Misi Tujuan -->
-            <div class="grid md:grid-cols-3 gap-6 mt-16">
-                <!-- Visi -->
-                <div
-                    class="relative bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100/50 hover:shadow-lg transition-all duration-300 group overflow-hidden">
-                    <div
-                        class="absolute top-0 right-0 w-24 h-24 bg-blue-200/20 rounded-full -translate-y-8 translate-x-8 group-hover:scale-150 transition-transform duration-500">
-                    </div>
-                    <div class="relative">
-                        <div
-                            class="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-md mb-4">
-                            <i class="fas fa-bullseye text-white text-lg"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-800 mb-3">Visi</h3>
-                        <p class="text-gray-600 leading-relaxed">
-                            {{ $pengaturan['visi'] ?? '"Menjadi sekolah vokasi berstandar internasional yang menghasilkan lulusan technopreneur."' }}
-                        </p>
-                    </div>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:2rem; margin-top:4rem;">
+                <div class="card-glass" data-aos="fade-up" style="display:flex; flex-direction:column;">
+                    <div style="font-size:2rem; color:var(--primary); margin-bottom:1rem;"><i class="fas fa-bullseye"></i></div>
+                    <h3 style="font-weight:700; margin-bottom:0.5rem;">Visi</h3>
+                    <p style="color:#475569;">{{ $pengaturan['visi'] ?? '"Menjadi sekolah vokasi berstandar internasional yang menghasilkan lulusan technopreneur."' }}</p>
                 </div>
-
-                <!-- Misi -->
-                <div
-                    class="relative bg-gradient-to-br from-cyan-50 to-teal-50 rounded-2xl p-6 border border-cyan-100/50 hover:shadow-lg transition-all duration-300 group overflow-hidden">
-                    <div
-                        class="absolute top-0 right-0 w-24 h-24 bg-cyan-200/20 rounded-full -translate-y-8 translate-x-8 group-hover:scale-150 transition-transform duration-500">
-                    </div>
-                    <div class="relative">
-                        <div
-                            class="w-12 h-12 bg-gradient-to-br from-cyan-500 to-teal-600 rounded-xl flex items-center justify-center shadow-md mb-4">
-                            <i class="fas fa-list-check text-white text-lg"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-800 mb-3">Misi</h3>
-                        @php
-                            $misiLines = array_filter(explode("\n", $pengaturan['misi'] ?? ''));
-                        @endphp
-                        @if(count($misiLines) > 0)
-                            <ul class="text-gray-600 space-y-2">
-                                @foreach($misiLines as $line)
-                                    <li class="flex items-start gap-2">
-                                        <i class="fas fa-chevron-right text-cyan-500 text-xs mt-1.5 flex-shrink-0"></i>
-                                        <span>{{ trim($line) }}</span>
-                                    </li>
-                                @endforeach
-                            </ul>
-                        @else
-                            <ul class="text-gray-600 space-y-2">
-                                <li class="flex items-start gap-2"><i
-                                        class="fas fa-chevron-right text-cyan-500 text-xs mt-1.5 flex-shrink-0"></i><span>Mengimplementasikan
-                                        teaching factory berbasis industri 4.0</span></li>
-                                <li class="flex items-start gap-2"><i
-                                        class="fas fa-chevron-right text-cyan-500 text-xs mt-1.5 flex-shrink-0"></i><span>Mengembangkan
-                                        karakter disiplin, inovatif, dan kolaboratif</span></li>
-                                <li class="flex items-start gap-2"><i
-                                        class="fas fa-chevron-right text-cyan-500 text-xs mt-1.5 flex-shrink-0"></i><span>Memperluas
-                                        kerjasama dengan DUDI nasional & internasional</span></li>
-                            </ul>
-                        @endif
-                    </div>
+                <div class="card-glass" data-aos="fade-up" data-aos-delay="100" style="display:flex; flex-direction:column;">
+                    <div style="font-size:2rem; color:#8b5cf6; margin-bottom:1rem;"><i class="fas fa-flag"></i></div>
+                    <h3 style="font-weight:700; margin-bottom:0.5rem;">Tujuan</h3>
+                    @php $tujuanLines = array_filter(explode("\n", $pengaturan['tujuan'] ?? '')); @endphp
+                    <ul style="color:#475569; padding-left:1.5rem;">
+                        @foreach($tujuanLines ?: ['Lulusan kompeten dan berdaya saing', 'Budaya inovasi dan technopreneurship', 'Kerjasama strategis industri'] as $line)
+                            <li style="margin-bottom:0.4rem;">{{ trim($line) }}</li>
+                        @endforeach
+                    </ul>
                 </div>
-
-                <!-- Tujuan -->
-                <div
-                    class="relative bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl p-6 border border-indigo-100/50 hover:shadow-lg transition-all duration-300 group overflow-hidden">
-                    <div
-                        class="absolute top-0 right-0 w-24 h-24 bg-indigo-200/20 rounded-full -translate-y-8 translate-x-8 group-hover:scale-150 transition-transform duration-500">
-                    </div>
-                    <div class="relative">
-                        <div
-                            class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-md mb-4">
-                            <i class="fas fa-flag text-white text-lg"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-800 mb-3">Tujuan</h3>
-                        @php
-                            $tujuanLines = array_filter(explode("\n", $pengaturan['tujuan'] ?? ''));
-                        @endphp
-                        @if(count($tujuanLines) > 0)
-                            <ul class="text-gray-600 space-y-2">
-                                @foreach($tujuanLines as $line)
-                                    <li class="flex items-start gap-2">
-                                        <i class="fas fa-chevron-right text-indigo-500 text-xs mt-1.5 flex-shrink-0"></i>
-                                        <span>{{ trim($line) }}</span>
-                                    </li>
-                                @endforeach
-                            </ul>
-                        @else
-                            <ul class="text-gray-600 space-y-2">
-                                <li class="flex items-start gap-2"><i
-                                        class="fas fa-chevron-right text-indigo-500 text-xs mt-1.5 flex-shrink-0"></i><span>Mencetak
-                                        lulusan yang kompeten dan berdaya saing tinggi</span></li>
-                                <li class="flex items-start gap-2"><i
-                                        class="fas fa-chevron-right text-indigo-500 text-xs mt-1.5 flex-shrink-0"></i><span>Membangun
-                                        budaya inovasi dan technopreneurship</span></li>
-                                <li class="flex items-start gap-2"><i
-                                        class="fas fa-chevron-right text-indigo-500 text-xs mt-1.5 flex-shrink-0"></i><span>Menjalin
-                                        kerjasama strategis dengan dunia industri</span></li>
-                            </ul>
-                        @endif
+                <div class="card-glass" data-aos="fade-up" data-aos-delay="200" style="grid-column: 1 / -1; display:flex; flex-direction:column;">
+                    <div style="font-size:2rem; color:#06b6d4; margin-bottom:1rem;"><i class="fas fa-list-check"></i></div>
+                    <h3 style="font-weight:700; margin-bottom:0.5rem;">Misi</h3>
+                    @php $misiLines = array_filter(explode("\n", $pengaturan['misi'] ?? '')); @endphp
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:1.5rem;">
+                        <ul style="color:#475569; padding-left:1.5rem; margin:0;">
+                            @foreach($misiLines ?: ['Teaching factory berbasis industri 4.0', 'Karakter disiplin, inovatif, kolaboratif', 'Kerjasama DUDI nasional & internasional'] as $line)
+                                <li style="margin-bottom:0.5rem;">{{ trim($line) }}</li>
+                            @endforeach
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ========== JURUSAN ========== -->
-    <section id="jurusan" class="py-20 bg-gray-50">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="text-center mb-12">
-                <span class="text-blue-600 font-bold uppercase text-sm bg-blue-100 px-3 py-1 rounded-full">Kompetensi
-                    Keahlian</span>
-                <h2 class="text-4xl md:text-5xl font-black text-gray-800 mt-4">Pilih Jurusan Favoritmu</h2>
+    <!-- ===== JURUSAN ===== -->
+    <section id="jurusan" class="section" style="background:#f5f7fe;">
+        <div class="section-container">
+            <div style="text-align:center; margin-bottom:3rem;" data-aos="fade-up">
+                <span class="section-label">Kompetensi Keahlian</span>
+                <h2 class="section-heading">Pilih Jurusan Favorit</h2>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:2rem;">
                 @forelse($jurusan as $j)
-                    <div class="card-modern overflow-hidden card-tilt reveal">
-                        @if($j->gambar && Storage::disk('public')->exists($j->gambar))
-                            <img src="{{ Storage::url($j->gambar) }}" class="w-full h-48 object-cover">
-                        @else
-                            <div
-                                class="w-full h-48 bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center">
-                                <i class="fas fa-laptop-code text-5xl text-blue-200"></i>
+                    <div class="jurusan-card" data-aos="fade-up" data-aos-delay="{{ $loop->index * 80 }}">
+                        <div style="overflow:hidden;">
+                            @if($j->gambar && Storage::disk('public')->exists($j->gambar))
+                                <img src="{{ Storage::url($j->gambar) }}" class="jurusan-img" alt="{{ $j->nama }}">
+                            @else
+                                <div class="jurusan-img" style="background:linear-gradient(135deg, #e0e7ff, #c7d2fe); display:flex; align-items:center; justify-content:center;">
+                                    <i class="fas fa-laptop-code" style="font-size:3rem; color:#818cf8;"></i>
+                                </div>
+                            @endif
+                        </div>
+                        <div class="jurusan-body">
+                            <div class="jurusan-badge">{{ $j->kode }}</div>
+                            <p style="color:var(--text); font-weight:700; font-size:1.1rem;">{{ $j->nama }}</p>
+                            <div class="desc-container">
+                                <p style="color:#64748b; margin:0.8rem 0; font-size:0.95rem;">
+                                    <span class="desc-short">{{ Str::limit($j->deskripsi, 80) }}</span>
+                                    <span class="desc-full" style="display:none;">{{ $j->deskripsi }}</span>
+                                    @if(strlen($j->deskripsi) > 80)
+                                        <button type="button" onclick="let c = this.parentElement; c.querySelector('.desc-short').style.display='none'; c.querySelector('.desc-full').style.display='inline'; this.style.display='none';" style="background:none; border:none; color:var(--primary); font-weight:700; cursor:pointer; font-size:0.85rem; padding:0; margin-left:0.3rem;">Selengkapnya</button>
+                                    @endif
+                                </p>
                             </div>
-                        @endif
-                        <div class="p-5">
-                            <h3 class="text-xl font-bold">{{ $j->kode }}</h3>
-                            <p class="text-gray-500 text-sm">{{ $j->nama }}</p>
-                            <p class="text-gray-600 mt-2 text-sm">{{ Str::limit($j->deskripsi, 80) }}</p>
-                            <div class="flex items-center justify-between mt-2">
-                                <span class="text-xs text-[#8ab4d0] font-semibold">{{ $j->kuota ?? '40' }} Kuota</span>
-                                <a href="{{ route('jurusan.show', $j->kode) }}"
-                                    class="text-xs text-[#2563eb] font-bold flex items-center gap-1 hover:underline">
-                                    Detail <i class="fas fa-arrow-right text-xs"></i>
-                                </a>
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:1.5rem; padding-top:1rem; border-top:1px solid #f1f5f9;">
+                                <span style="font-size:0.85rem; color:#94a3b8; font-weight:600;"><i class="fas fa-users" style="color:var(--primary);"></i> Kuota: {{ $j->kuota ?? '40' }}</span>
+                                <a href="{{ route('jurusan.show', $j->kode) }}" style="color:var(--primary); font-weight:700; text-decoration:none; display:flex; align-items:center; gap:0.3rem;">Detail <i class="fas fa-chevron-right" style="font-size:0.7rem;"></i></a>
                             </div>
                         </div>
                     </div>
                 @empty
-                    <div class="col-span-full text-center py-10 text-gray-500">
-                        <i class="fas fa-exclamation-circle text-3xl mb-3 opacity-50"></i>
-                        <p>Belum ada data jurusan</p>
-                    </div>
+                    <div style="grid-column:1/-1; text-align:center; color:#94a3b8;">Belum ada data jurusan</div>
                 @endforelse
             </div>
         </div>
     </section>
 
-    <!-- ========== ALUR PENDAFTARAN ========== -->
-    <section id="alur" class="py-20 bg-white">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="text-center mb-12">
-                <span
-                    class="text-blue-600 font-bold uppercase text-sm bg-blue-100 px-3 py-1 rounded-full">Panduan</span>
-                <h2 class="text-4xl md:text-5xl font-black text-gray-800 mt-4">Alur Pendaftaran</h2>
+    <!-- ===== ALUR ===== -->
+    <section id="alur" class="section" style="background:white;">
+        <div class="section-container">
+            <div style="text-align:center; margin-bottom:4rem;" data-aos="fade-up">
+                <span class="section-label">Panduan</span>
+                <h2 class="section-heading">Alur Pendaftaran</h2>
+                <p style="color:#64748b; max-width:600px; margin:0 auto;">Ikuti langkah-langkah mudah berikut untuk menjadi bagian dari SMK ICB Cinta Teknika.</p>
             </div>
-            <div class="grid md:grid-cols-3 gap-6">
-                <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition">
-                    <div
-                        class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xl font-black mb-4">
-                        01</div>
-                    <h3 class="text-xl font-bold">Buat Akun</h3>
-                    <p class="text-gray-600 mt-2">Registrasi dengan email dan password.</p>
-                </div>
-                <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition">
-                    <div
-                        class="w-12 h-12 bg-cyan-100 text-cyan-600 rounded-full flex items-center justify-center text-xl font-black mb-4">
-                        02</div>
-                    <h3 class="text-xl font-bold">Isi Formulir</h3>
-                    <p class="text-gray-600 mt-2">Lengkapi data pribadi & pilih jurusan.</p>
-                </div>
-                <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition">
-                    <div
-                        class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xl font-black mb-4">
-                        03</div>
-                    <h3 class="text-xl font-bold">Upload Berkas</h3>
-                    <p class="text-gray-600 mt-2">Ijazah, rapor, KK, pas foto.</p>
-                </div>
-                <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition">
-                    <div
-                        class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-xl font-black mb-4">
-                        04</div>
-                    <h3 class="text-xl font-bold">Verifikasi & Seleksi</h3>
-                    <p class="text-gray-600 mt-2">Admin verifikasi, lalu tes online.</p>
-                </div>
-                <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition">
-                    <div
-                        class="w-12 h-12 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-xl font-black mb-4">
-                        05</div>
-                    <h3 class="text-xl font-bold">Pengumuman</h3>
-                    <p class="text-gray-600 mt-2">Hasil kelulusan via website & email.</p>
-                </div>
-                <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition">
-                    <div
-                        class="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-xl font-black mb-4">
-                        06</div>
-                    <h3 class="text-xl font-bold">Daftar Ulang</h3>
-                    <p class="text-gray-600 mt-2">Lengkapi administrasi & menjadi siswa baru.</p>
-                </div>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:2rem;">
+                @php 
+                    $steps = [
+                        ['icon' => 'fa-user-plus', 'title' => 'Buat Akun', 'desc' => 'Daftar menggunakan email aktif dan password yang aman.'],
+                        ['icon' => 'fa-file-signature', 'title' => 'Isi Formulir', 'desc' => 'Lengkapi biodata diri, data orang tua, dan pilih jurusan.'],
+                        ['icon' => 'fa-cloud-arrow-up', 'title' => 'Upload Berkas', 'desc' => 'Unggah dokumen persyaratan (Ijazah, KK, Akta, dll).'],
+                        ['icon' => 'fa-user-check', 'title' => 'Verifikasi', 'desc' => 'Tunggu admin memverifikasi kelengkapan berkas Anda.'],
+                        ['icon' => 'fa-bullhorn', 'title' => 'Pengumuman', 'desc' => 'Cek status kelulusan melalui dashboard pendaftaran.'],
+                        ['icon' => 'fa-id-card', 'title' => 'Daftar Ulang', 'desc' => 'Lakukan daftar ulang bagi yang dinyatakan lulus seleksi.']
+                    ]; 
+                @endphp
+                @foreach($steps as $i => $step)
+                    <div class="card-glass" data-aos="fade-up" data-aos-delay="{{ $i * 100 }}" style="position:relative; overflow:hidden;">
+                        <div style="position:absolute; right:-20px; top:-20px; font-size:8rem; color:var(--primary); opacity:0.05; font-weight:900; line-height:1;">{{ $i+1 }}</div>
+                        <div style="width:60px; height:60px; border-radius:1rem; background:var(--primary-soft); color:var(--primary); display:flex; align-items:center; justify-content:center; font-size:1.8rem; margin-bottom:1.5rem;">
+                            <i class="fas {{ $step['icon'] }}"></i>
+                        </div>
+                        <h3 style="font-weight:700; font-size:1.2rem; margin-bottom:0.5rem; color:var(--text);">{{ $step['title'] }}</h3>
+                        <p style="color:#64748b; font-size:0.95rem; line-height:1.5;">{{ $step['desc'] }}</p>
+                    </div>
+                @endforeach
             </div>
         </div>
     </section>
 
-    <!-- ========== INFO & JADWAL ========== -->
-    <section id="info" class="py-20 bg-gray-50">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="grid md:grid-cols-2 gap-8">
-                <div class="bg-white rounded-2xl p-6 shadow-sm">
-                    <h3 class="text-2xl font-bold flex items-center gap-2"><i class="fas fa-bullhorn text-blue-500"></i>
-                        Pengumuman Terbaru</h3>
-                    <div class="mt-6 space-y-4">
-                        @forelse($pengumuman as $i => $p)
-                            @php
-                                $colors = ['blue', 'yellow', 'green', 'purple', 'red'];
-                                $color = $colors[$i % count($colors)];
-                            @endphp
-                            <div class="border-l-4 border-{{ $color }}-500 pl-4">
-                                <p class="font-semibold">{{ $p->judul }}</p>
-                                <p class="text-gray-500 text-sm">
-                                    @if($p->tanggal_mulai)
-                                        {{ $p->tanggal_mulai->translatedFormat('d F Y') }}
-                                        @if($p->tanggal_selesai && $p->tanggal_selesai != $p->tanggal_mulai)
-                                            - {{ $p->tanggal_selesai->translatedFormat('d F Y') }}
-                                        @endif
-                                    @else
-                                        {{ $p->created_at ? $p->created_at->translatedFormat('d F Y') : '-' }}
-                                    @endif
-                                </p>
+    <!-- ===== INFO & JADWAL ===== -->
+    <section id="info" class="section" style="background:#f8fafc;">
+        <div class="section-container">
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(350px,1fr)); gap:3rem;">
+                <!-- Pengumuman -->
+                <div data-aos="fade-right">
+                    <div style="display:flex; align-items:center; gap:1rem; margin-bottom:2rem;">
+                        <div style="width:50px; height:50px; border-radius:12px; background:#eff6ff; color:#3b82f6; display:flex; align-items:center; justify-content:center; font-size:1.5rem;">
+                            <i class="fas fa-bullhorn"></i>
+                        </div>
+                        <h2 style="font-size:2rem; font-weight:800; letter-spacing:-0.02em;">Pengumuman</h2>
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:1rem;">
+                        @forelse($pengumuman as $p)
+                            <div class="card-glass" style="padding:1.5rem; display:flex; gap:1rem; align-items:flex-start;">
+                                <div style="min-width:3px; background:var(--primary); align-self:stretch; border-radius:3px;"></div>
+                                <div>
+                                    <h4 style="font-weight:700; font-size:1.1rem; color:#0f172a; margin-bottom:0.3rem;">{{ $p->judul }}</h4>
+                                    <p style="font-size:0.85rem; color:#64748b; display:flex; align-items:center; gap:0.5rem;">
+                                        <i class="far fa-clock"></i> {{ $p->tanggal_mulai ? $p->tanggal_mulai->translatedFormat('d F Y') : '-' }}
+                                    </p>
+                                </div>
                             </div>
                         @empty
-                            <div class="text-center py-6 text-gray-400">
-                                <i class="fas fa-bullhorn text-3xl mb-2 opacity-50"></i>
-                                <p>Belum ada pengumuman</p>
+                            <div class="card-glass" style="text-align:center; padding:3rem 1rem;">
+                                <i class="fas fa-inbox" style="font-size:3rem; color:#cbd5e1; margin-bottom:1rem;"></i>
+                                <p style="color:#64748b; font-weight:500;">Belum ada pengumuman terbaru</p>
                             </div>
                         @endforelse
                     </div>
                 </div>
-                <div class="bg-white rounded-2xl p-6 shadow-sm">
-                    <h3 class="text-2xl font-bold flex items-center gap-2"><i
-                            class="fas fa-calendar-alt text-blue-500"></i> Jadwal PPDB
-                        {{ date('Y') }}/{{ date('Y') + 1 }}
-                    </h3>
-                    <div class="overflow-x-auto mt-6">
-                        <table class="min-w-full text-sm">
-                            <thead class="border-b">
-                                <tr>
-                                    <th class="text-left py-2">Kegiatan</th>
-                                    <th class="text-left py-2">Tanggal</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($jadwal as $j)
-                                    <tr class="border-b">
-                                        <td class="py-2">{{ $j->nama_kegiatan }}</td>
-                                        <td class="py-2">
-                                            {{ $j->tanggal_mulai->translatedFormat('d M Y') }}
-                                            @if($j->tanggal_selesai && $j->tanggal_selesai != $j->tanggal_mulai)
-                                                - {{ $j->tanggal_selesai->translatedFormat('d M Y') }}
-                                            @endif
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="2" class="text-center py-6 text-gray-400">Belum ada jadwal PPDB</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+
+                <!-- Jadwal -->
+                <div data-aos="fade-left">
+                    <div style="display:flex; align-items:center; gap:1rem; margin-bottom:2rem;">
+                        <div style="width:50px; height:50px; border-radius:12px; background:#fef2f2; color:#ef4444; display:flex; align-items:center; justify-content:center; font-size:1.5rem;">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <h2 style="font-size:2rem; font-weight:800; letter-spacing:-0.02em;">Jadwal PPDB</h2>
+                    </div>
+                    <div class="card-glass" style="padding:0; overflow:hidden;">
+                        @forelse($jadwal as $i => $j)
+                            <div style="padding:1.5rem; display:flex; justify-content:space-between; align-items:center; border-bottom:{{ $loop->last ? 'none' : '1px solid #e2e8f0' }}; transition:var(--transition);" onmouseover="this.style.backgroundColor='#f8fafc'" onmouseout="this.style.backgroundColor='transparent'">
+                                <div style="font-weight:600; color:#1e293b;">{{ $j->nama_kegiatan }}</div>
+                                <div style="background:var(--primary-soft); color:var(--primary); padding:0.4rem 1rem; border-radius:100px; font-size:0.85rem; font-weight:700;">
+                                    {{ $j->tanggal_mulai->translatedFormat('d M Y') }}
+                                </div>
+                            </div>
+                        @empty
+                            <div style="text-align:center; padding:3rem 1rem;">
+                                <i class="far fa-calendar-times" style="font-size:3rem; color:#cbd5e1; margin-bottom:1rem;"></i>
+                                <p style="color:#64748b; font-weight:500;">Belum ada jadwal yang ditetapkan</p>
+                            </div>
+                        @endforelse
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ========== GALERI ========== -->
-    <section id="galeri" class="py-20 bg-white">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="text-center mb-12">
-                <span class="text-blue-600 font-bold uppercase text-sm bg-blue-100 px-3 py-1 rounded-full">Momen
-                    Terbaik</span>
-                <h2 class="text-4xl md:text-5xl font-black text-gray-800 mt-4">Galeri Sekolah</h2>
+    <!-- ===== GALERI ===== -->
+    <section id="galeri" class="section" style="background:white;">
+        <div class="section-container">
+            <div style="text-align:center; margin-bottom:3rem;" data-aos="fade-up">
+                <span class="section-label">Momen Terbaik</span>
+                <h2 class="section-heading">Galeri Sekolah</h2>
             </div>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                @forelse($galeri as $g)
-                    <div class="relative group overflow-hidden rounded-xl h-40 shadow hover:shadow-lg transition">
-                        <img src="{{ Storage::url($g->gambar) }}"
-                            class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
-                        <div
-                            class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                            <span class="text-white text-sm font-medium px-2 text-center">{{ $g->judul }}</span>
-                        </div>
+            <div class="gallery-grid">
+                @forelse(collect($galeri)->take(8) as $g)
+                    <div class="gallery-card" data-aos="fade-up">
+                        <img src="{{ Storage::url($g->gambar) }}" alt="{{ $g->judul }}">
+                        <div class="gallery-overlay"><span style="color:white; font-weight:600;">{{ $g->judul }}</span></div>
                     </div>
                 @empty
-                    <div class="col-span-full text-center py-10 text-gray-500">
-                        <i class="fas fa-images text-3xl mb-3 opacity-50"></i>
-                        <p>Belum ada foto galeri</p>
-                    </div>
+                    <div style="grid-column:1/-1; text-align:center; color:#94a3b8;">Belum ada foto galeri</div>
                 @endforelse
             </div>
         </div>
     </section>
 
-    <!-- ========== KONTAK & LOKASI ========== -->
-    <section id="kontak" class="py-20 bg-gray-50">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="grid md:grid-cols-2 gap-8">
-                <div>
-                    <h3 class="text-2xl font-bold text-gray-800">Kontak & Lokasi</h3>
-                    <div class="mt-6 space-y-4 text-gray-700">
-                        <div class="flex items-center gap-3"><i
-                                class="fas fa-map-marker-alt text-blue-500 w-6 text-center"></i>
-                            {{ $pengaturan['alamat'] ?? 'Jl. Pendidikan No.123, Cinta Teknika, Bandung' }}</div>
-                        <div class="flex items-center gap-3"><i
-                                class="fab fa-whatsapp text-green-500 w-6 text-center"></i>
-                            {{ $pengaturan['kontak'] ?? '+62 812-3456-7890' }}</div>
-                        <div class="flex items-center gap-3"><i
-                                class="fas fa-envelope text-blue-500 w-6 text-center"></i> {{ $pengaturan['email'] ??
-                            'ppdb@smkicb.sch.id' }}</div>
-                        @if(isset($pengaturan['website']) && $pengaturan['website'])
-                            <div class="flex items-center gap-3"><i class="fas fa-globe text-blue-500 w-6 text-center"></i>
-                                {{ $pengaturan['website'] }}</div>
-                        @endif
+    <!-- ===== KONTAK ===== -->
+    <section id="kontak" class="section" style="background:#f5f7fe;">
+        <div class="section-container">
+            <div style="text-align:center; margin-bottom:4rem;" data-aos="fade-up">
+                <span class="section-label">Hubungi Kami</span>
+                <h2 class="section-heading">Layanan Informasi PPDB</h2>
+            </div>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(350px,1fr)); gap:3rem;">
+                <div data-aos="fade-right" style="display:flex; flex-direction:column; gap:1.5rem;">
+                    <div class="card-glass" style="display:flex; gap:1.5rem; align-items:center; padding:1.5rem;">
+                        <div style="width:60px; height:60px; border-radius:50%; background:#eff6ff; color:#3b82f6; display:flex; align-items:center; justify-content:center; font-size:1.5rem; flex-shrink:0;">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div>
+                            <h4 style="font-weight:700; color:#0f172a; margin-bottom:0.2rem;">Alamat Lengkap</h4>
+                            <p style="color:#64748b; font-size:0.95rem;">{{ $pengaturan['alamat'] ?? 'Jl. Pendidikan No.123, Kota Bandung' }}</p>
+                        </div>
                     </div>
-                    <div class="mt-8 p-4 bg-blue-50 rounded-xl">
-                        <p class="font-semibold mb-1">Jam Operasional PPDB</p>
-                        @if(isset($jam_operasional) && $jam_operasional->count() > 0)
-                            @foreach($jam_operasional as $jam)
-                                <p class="text-sm">
-                                    <span
-                                        class="font-medium text-gray-800">{{ $jam->hari }}</span>{{ $jam->tanggal ? ' (' . \Carbon\Carbon::parse($jam->tanggal)->format('d/m/Y') . ')' : '' }}:
-                                    <span class="text-gray-600">{{ substr($jam->jam_mulai, 0, 5) }} -
-                                        {{ substr($jam->jam_selesai, 0, 5) }} WIB</span>
-                                </p>
-                            @endforeach
-                        @else
-                            <p class="text-sm text-gray-500 italic"><i class="fas fa-info-circle mr-1"></i>Belum ada
-                                informasi jam operasional.</p>
-                        @endif
+                    
+                    <div class="card-glass" style="display:flex; gap:1.5rem; align-items:center; padding:1.5rem;">
+                        <div style="width:60px; height:60px; border-radius:50%; background:#ecfdf5; color:#10b981; display:flex; align-items:center; justify-content:center; font-size:1.5rem; flex-shrink:0;">
+                            <i class="fab fa-whatsapp"></i>
+                        </div>
+                        <div>
+                            <h4 style="font-weight:700; color:#0f172a; margin-bottom:0.2rem;">Telepon / WhatsApp</h4>
+                            <p style="color:#64748b; font-size:0.95rem;">{{ $pengaturan['kontak'] ?? '+62 812-3456-7890' }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="card-glass" style="display:flex; gap:1.5rem; align-items:center; padding:1.5rem;">
+                        <div style="width:60px; height:60px; border-radius:50%; background:#f5f3ff; color:#8b5cf6; display:flex; align-items:center; justify-content:center; font-size:1.5rem; flex-shrink:0;">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div>
+                            <h4 style="font-weight:700; color:#0f172a; margin-bottom:0.2rem;">Email Official</h4>
+                            <p style="color:#64748b; font-size:0.95rem;">{{ $pengaturan['email'] ?? 'ppdb@smkicb.sch.id' }}</p>
+                        </div>
                     </div>
                 </div>
-                <div class="rounded-xl overflow-hidden h-64 shadow-md">
-                    <iframe class="w-full h-full"
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15843.208719365392!2d107.6274077145073!3d-6.914239944835365!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e7e82d986cbb%3A0x9ad00826cdd60f01!2sSMK%20ICB%20Cinta%20Teknika!5e0!3m2!1sen!2sid!4v1781097826867!5m2!1sen!2sid"
-                        width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
-                        referrerpolicy="no-referrer-when-downgrade"></iframe>
+
+                <div data-aos="fade-left" style="display:flex; flex-direction:column; gap:1.5rem;">
+                    <div class="map-frame" style="height:300px; flex-grow:1;">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15843.208719365392!2d107.6274077145073!3d-6.914239944835365!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e7e82d986cbb%3A0x9ad00826cdd60f01!2sSMK%20ICB%20Cinta%20Teknika!5e0!3m2!1sen!2sid!4v1781097826867!5m2!1sen!2sid"
+                            width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ========== FOOTER ========== -->
-    <footer class="bg-white border-t border-gray-200 py-10">
-        <div class="max-w-7xl mx-auto px-4 text-center text-gray-500 text-sm">
-            <div class="flex justify-center space-x-6 mb-4">
-                @if(isset($pengaturan['instagram']) && $pengaturan['instagram'])
-                    <a href="{{ $pengaturan['instagram'] }}" target="_blank" class="hover:text-pink-500 transition"><i
-                            class="fab fa-instagram text-xl"></i></a>
-                @endif
-                @if(isset($pengaturan['facebook']) && $pengaturan['facebook'])
-                    <a href="{{ $pengaturan['facebook'] }}" target="_blank" class="hover:text-blue-600 transition"><i
-                            class="fab fa-facebook text-xl"></i></a>
-                @endif
-                @if(isset($pengaturan['youtube']) && $pengaturan['youtube'])
-                    <a href="{{ $pengaturan['youtube'] }}" target="_blank" class="hover:text-red-500 transition"><i
-                            class="fab fa-youtube text-xl"></i></a>
-                @endif
-                @if(!isset($pengaturan['instagram']) && !isset($pengaturan['facebook']) && !isset($pengaturan['youtube']))
-                    <a href="#" class="hover:text-blue-600"><i class="fab fa-instagram text-xl"></i></a>
-                    <a href="#" class="hover:text-blue-600"><i class="fab fa-facebook text-xl"></i></a>
-                    <a href="#" class="hover:text-blue-600"><i class="fab fa-youtube text-xl"></i></a>
-                @endif
+    <!-- ===== FOOTER FULL ===== -->
+    <footer class="footer-modern" style="text-align:left;">
+        <div class="section-container" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px,1fr)); gap:4rem; margin-bottom:3rem;">
+            <!-- Brand & Info -->
+            <div>
+                <div style="display:flex; align-items:center; gap:1rem; margin-bottom:1.5rem;">
+                    @if(isset($pengaturan['logo']) && Storage::disk('public')->exists($pengaturan['logo']))
+                        <img src="{{ Storage::url($pengaturan['logo']) }}" alt="Logo" style="height:50px;">
+                    @endif
+                    <h3 style="color:white; font-size:1.5rem; font-weight:800;">{{ $pengaturan['nama_sekolah'] ?? 'SMK ICB' }}</h3>
+                </div>
+                <p style="color:#94a3b8; font-size:0.95rem; line-height:1.7; margin-bottom:1.5rem;">
+                    Sistem Penerimaan Peserta Didik Baru (PPDB) Online. Membangun generasi cerdas, terampil, dan berkarakter industri 4.0.
+                </p>
+                <div style="display:flex; gap:1rem;">
+                    @if(isset($pengaturan['instagram']) && $pengaturan['instagram'])
+                        <a href="{{ $pengaturan['instagram'] }}" target="_blank" style="width:40px; height:40px; border-radius:50%; background:rgba(255,255,255,0.05); color:white; display:flex; align-items:center; justify-content:center; transition:0.3s;" onmouseover="this.style.background='var(--primary)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'"><i class="fab fa-instagram"></i></a>
+                    @endif
+                    @if(isset($pengaturan['facebook']) && $pengaturan['facebook'])
+                        <a href="{{ $pengaturan['facebook'] }}" target="_blank" style="width:40px; height:40px; border-radius:50%; background:rgba(255,255,255,0.05); color:white; display:flex; align-items:center; justify-content:center; transition:0.3s;" onmouseover="this.style.background='var(--primary)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'"><i class="fab fa-facebook-f"></i></a>
+                    @endif
+                    @if(isset($pengaturan['youtube']) && $pengaturan['youtube'])
+                        <a href="{{ $pengaturan['youtube'] }}" target="_blank" style="width:40px; height:40px; border-radius:50%; background:rgba(255,255,255,0.05); color:white; display:flex; align-items:center; justify-content:center; transition:0.3s;" onmouseover="this.style.background='#ef4444'" onmouseout="this.style.background='rgba(255,255,255,0.05)'"><i class="fab fa-youtube"></i></a>
+                    @endif
+                </div>
             </div>
-            <p>© {{ date('Y') }} PPDB {{ $pengaturan['nama_sekolah'] ?? 'SMK ICB Cinta Teknika' }}. All Rights Reserved.
-            </p>
-            <p class="text-xs mt-1">#FutureReady #VokasiHebat</p>
+
+            <!-- Tautan -->
+            <div>
+                <h4 style="color:white; font-size:1.1rem; font-weight:700; margin-bottom:1.5rem;">Tautan Cepat</h4>
+                <ul style="list-style:none; padding:0; display:flex; flex-direction:column; gap:0.8rem;">
+                    <li><a href="#beranda" style="color:#94a3b8; text-decoration:none; transition:0.3s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='#94a3b8'">Beranda</a></li>
+                    <li><a href="#profil" style="color:#94a3b8; text-decoration:none; transition:0.3s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='#94a3b8'">Profil Sekolah</a></li>
+                    <li><a href="#jurusan" style="color:#94a3b8; text-decoration:none; transition:0.3s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='#94a3b8'">Kompetensi Keahlian</a></li>
+                    <li><a href="#alur" style="color:#94a3b8; text-decoration:none; transition:0.3s;" onmouseover="this.style.color='white'" onmouseout="this.style.color='#94a3b8'">Alur Pendaftaran</a></li>
+                </ul>
+            </div>
+
+            <!-- Portal -->
+            <div>
+                <h4 style="color:white; font-size:1.1rem; font-weight:700; margin-bottom:1.5rem;">Portal Akses</h4>
+                <ul style="list-style:none; padding:0; display:flex; flex-direction:column; gap:0.8rem;">
+                    <li><a href="{{ route('login') }}" style="color:#94a3b8; text-decoration:none; transition:0.3s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='#94a3b8'"><i class="fas fa-chevron-right" style="font-size:0.7rem; margin-right:0.5rem;"></i> Login Siswa</a></li>
+                    <li><a href="{{ route('register') }}" style="color:#94a3b8; text-decoration:none; transition:0.3s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='#94a3b8'"><i class="fas fa-chevron-right" style="font-size:0.7rem; margin-right:0.5rem;"></i> Daftar Baru</a></li>
+                    <li><a href="{{ url('/admin/login') }}" style="color:#94a3b8; text-decoration:none; transition:0.3s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='#94a3b8'"><i class="fas fa-chevron-right" style="font-size:0.7rem; margin-right:0.5rem;"></i> Admin Panel</a></li>
+                </ul>
+            </div>
+
+            <!-- Dukungan -->
+            <div>
+                <h4 style="color:white; font-size:1.1rem; font-weight:700; margin-bottom:1.5rem;">Dukungan Sistem</h4>
+                <div style="background:rgba(255,255,255,0.03); padding:1.2rem; border-radius:1rem; border:1px solid rgba(255,255,255,0.05);">
+                    <p style="font-size:0.85rem; color:#94a3b8; margin-bottom:1rem;">Platform pendaftaran online yang didesain untuk kemudahan dan kecepatan akses.</p>
+                    <div style="display:flex; flex-wrap:wrap; gap:0.5rem;">
+                        <span style="background:rgba(255,255,255,0.1); padding:0.3rem 0.6rem; border-radius:4px; font-size:0.75rem; color:white;">Laravel</span>
+                        <span style="background:rgba(255,255,255,0.1); padding:0.3rem 0.6rem; border-radius:4px; font-size:0.75rem; color:white;">MySQL</span>
+                        <span style="background:rgba(255,255,255,0.1); padding:0.3rem 0.6rem; border-radius:4px; font-size:0.75rem; color:white;">Tailwind</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section-container" style="border-top:1px solid rgba(255,255,255,0.1); padding-top:2rem; display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:1rem;">
+            <p style="margin:0; font-size:0.9rem;">&copy; {{ date('Y') }} PPDB {{ $pengaturan['nama_sekolah'] ?? 'SMK ICB Cinta Teknika' }}. All Rights Reserved.</p>
+            <p style="margin:0; font-size:0.9rem;">Didesain oleh <span style="color:var(--primary); font-weight:600;">Blue Dev</span></p>
         </div>
     </footer>
 
+    <!-- Floating Admin Button -->
+    <a href="{{ url('/admin/login') }}" style="position:fixed; bottom:2rem; right:2rem; z-index:999; background:white; color:var(--text); padding:1rem 1.5rem; border-radius:100px; box-shadow:0 15px 30px rgba(0,0,0,0.1); font-weight:700; text-decoration:none; display:flex; align-items:center; gap:0.6rem; transition:0.3s; border:1px solid rgba(0,0,0,0.05);" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 20px 40px rgba(0,0,0,0.15)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 15px 30px rgba(0,0,0,0.1)';">
+        <i class="fas fa-user-shield" style="color:var(--primary); font-size:1.2rem;"></i> Admin Panel
+    </a>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        const menuBtn = document.getElementById('mobileMenuBtn');
+        AOS.init({ once: true, duration: 800, easing: 'ease-out' });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 30);
+        });
+
+        // Mobile toggle
+        const toggle = document.getElementById('mobileToggle');
         const mobileMenu = document.getElementById('mobileMenu');
-        if (menuBtn) menuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
-    </script>
-    <script>
-        // Scroll reveal using IntersectionObserver (moved from head)
-        document.addEventListener('DOMContentLoaded', function () {
-            const revealElements = document.querySelectorAll('.reveal');
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('reveal-visible');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.2 });
-            revealElements.forEach(el => observer.observe(el));
+        toggle.addEventListener('click', () => {
+            mobileMenu.style.display = mobileMenu.style.display === 'flex' ? 'none' : 'flex';
+        });
+        document.querySelectorAll('.mobile-link').forEach(link => {
+            link.addEventListener('click', () => mobileMenu.style.display = 'none');
         });
     </script>
 </body>
-
 </html>
