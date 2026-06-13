@@ -3,53 +3,249 @@
 @section('title', 'Edit Jam Operasional')
 
 @section('content')
-<div class="flex justify-center items-center min-h-[80vh]">
-    <div class="bg-white rounded-2xl shadow-2xl border border-gray-100 p-8 max-w-2xl w-full transition-all duration-300 hover:shadow-3d transform hover:-translate-y-1">
-        <div class="flex items-center gap-3 border-b border-gray-100 pb-4 mb-6">
-            <div class="w-10 h-10 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-xl flex items-center justify-center shadow-md">
-                <i class="fas fa-edit text-white text-sm"></i>
-            </div>
-            <h2 class="text-2xl font-bold text-gray-800">Edit Jam Operasional</h2>
+<div class="min-h-screen bg-[#f8fafc] relative overflow-hidden">
+
+    <!-- Ambient Background -->
+    <div class="fixed inset-0 pointer-events-none z-0">
+        <div class="absolute top-0 left-1/4 w-96 h-96 bg-blue-400/5 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-indigo-400/5 rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="relative z-10 max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 space-y-6">
+
+        <!-- Back Navigation -->
+        <div class="reveal">
+            <a href="{{ route('admin.jam_operasional.index') }}" class="group inline-flex items-center gap-2 text-sm text-gray-500 hover:text-blue-600 transition-colors">
+                <div class="w-8 h-8 rounded-lg bg-white border border-gray-200 group-hover:border-blue-300 group-hover:shadow-sm flex items-center justify-center transition-all">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                </div>
+                <span class="font-medium">Kembali ke Jam Operasional</span>
+            </a>
         </div>
 
-        @if($errors->any())
-            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-3 rounded-lg mb-6 shadow-sm">
-                <ul class="list-disc list-inside text-sm font-medium">
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
+        <!-- Header -->
+        <div class="reveal reveal-delay-1">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-bold uppercase tracking-wider mb-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
+                Master Data
             </div>
+            <h1 class="text-2xl md:text-3xl font-black text-gray-900 tracking-tight">Edit Jam Operasional</h1>
+            <p class="text-gray-500 text-sm mt-1">Perbarui jadwal pelayanan: {{ $jam->hari }}</p>
+        </div>
+
+        <!-- Error Alert -->
+        @if($errors->any())
+        <div class="bg-rose-50 border border-rose-200 rounded-2xl p-5 reveal reveal-delay-1">
+            <div class="flex items-start gap-3">
+                <div class="w-8 h-8 rounded-lg bg-rose-100 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-4 h-4 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h4 class="text-sm font-semibold text-rose-700">Terjadi kesalahan</h4>
+                    <ul class="mt-1 space-y-1">
+                        @foreach($errors->all() as $error)
+                        <li class="text-xs text-rose-600">{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        </div>
         @endif
 
-        <form action="{{ route('admin.jam_operasional.update', $jam->id) }}" method="POST" class="space-y-5">
-            @csrf
-            @method('PUT')
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Hari <span class="text-red-500">*</span></label>
-                    <input type="text" name="hari" placeholder="Contoh: Senin - Jumat" value="{{ old('hari', $jam->hari) }}" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-400 transition shadow-sm" required>
+        <!-- Form Card Full Width -->
+        <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden reveal reveal-delay-2">
+            
+            <form action="{{ route('admin.jam_operasional.update', $jam->id) }}" method="POST" class="p-6 md:p-8 lg:p-10">
+                @csrf
+                @method('PUT')
+
+                <div class="max-w-3xl space-y-6">
+
+                    <!-- Hari & Tanggal -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
+                                Hari <span class="text-rose-500">*</span>
+                            </label>
+                            <div class="relative">
+                                <div class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                    </svg>
+                                </div>
+                                <input type="text" name="hari" value="{{ old('hari', $jam->hari) }}" required placeholder="Contoh: Senin - Jumat"
+                                       class="w-full pl-10 pr-4 py-2.5 bg-gray-50/80 border border-gray-200 rounded-xl text-sm focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none placeholder:text-gray-400">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Tanggal (opsional)</label>
+                            <div class="relative">
+                                <div class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                    </svg>
+                                </div>
+                                <input type="date" name="tanggal" value="{{ old('tanggal', $jam->tanggal ? $jam->tanggal->format('Y-m-d') : '') }}"
+                                       class="w-full pl-10 pr-4 py-2.5 bg-gray-50/80 border border-gray-200 rounded-xl text-sm focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none">
+                            </div>
+                            <p class="text-xs text-gray-400 mt-1.5">Kosongkan jika berlaku untuk hari tertentu saja</p>
+                        </div>
+                    </div>
+
+                    <!-- Jam -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
+                                Jam Mulai <span class="text-rose-500">*</span>
+                            </label>
+                            <div class="relative">
+                                <div class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                </div>
+                                <input type="time" name="jam_mulai" value="{{ old('jam_mulai', substr($jam->jam_mulai, 0, 5)) }}" required
+                                       class="w-full pl-10 pr-4 py-2.5 bg-gray-50/80 border border-gray-200 rounded-xl text-sm focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
+                                Jam Selesai <span class="text-rose-500">*</span>
+                            </label>
+                            <div class="relative">
+                                <div class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                </div>
+                                <input type="time" name="jam_selesai" value="{{ old('jam_selesai', substr($jam->jam_selesai, 0, 5)) }}" required
+                                       class="w-full pl-10 pr-4 py-2.5 bg-gray-50/80 border border-gray-200 rounded-xl text-sm focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none">
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Tanggal (opsional)</label>
-                    <input type="date" name="tanggal" value="{{ old('tanggal', $jam->tanggal ? $jam->tanggal->format('Y-m-d') : '') }}" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-400 transition shadow-sm">
+
+                <!-- Divider -->
+                <div class="my-8 border-t border-gray-100"></div>
+
+                <!-- Actions -->
+                <div class="flex items-center justify-end gap-3">
+                    <a href="{{ route('admin.jam_operasional.index') }}" class="btn-outline-premium">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                        Batal
+                    </a>
+                    <button type="submit" class="btn-premium">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        Update Jam Operasional
+                    </button>
                 </div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Jam Mulai <span class="text-red-500">*</span></label>
-                    <input type="time" name="jam_mulai" value="{{ old('jam_mulai', substr($jam->jam_mulai, 0, 5)) }}" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-400 transition shadow-sm" required>
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Jam Selesai <span class="text-red-500">*</span></label>
-                    <input type="time" name="jam_selesai" value="{{ old('jam_selesai', substr($jam->jam_selesai, 0, 5)) }}" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-400 transition shadow-sm" required>
-                </div>
-            </div>
-            <div class="flex justify-end gap-3 pt-4">
-                <a href="{{ route('admin.jam_operasional.index') }}" class="px-5 py-2.5 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-xl text-sm font-medium transition shadow-md">Batal</a>
-                <button type="submit" class="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl text-sm font-medium shadow-md transition transform hover:scale-105">Update Jam Operasional</button>
-            </div>
-        </form>
+
+            </form>
+        </div>
+
     </div>
 </div>
+
+@push('styles')
+<style>
+    .btn-premium {
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(135deg, #2563eb, #4f46e5);
+        color: white;
+        padding: 0.625rem 1.5rem;
+        border-radius: 0.875rem;
+        font-weight: 700;
+        font-size: 0.875rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 14px 0 rgba(37, 99, 235, 0.25);
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .btn-premium:hover {
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0 8px 25px 0 rgba(37, 99, 235, 0.35);
+        background: linear-gradient(135deg, #1d4ed8, #4338ca);
+    }
+    .btn-premium:active {
+        transform: translateY(0) scale(0.98);
+    }
+
+    .btn-outline-premium {
+        background: transparent;
+        color: #475569;
+        border: 1.5px solid #e2e8f0;
+        padding: 0.625rem 1.5rem;
+        border-radius: 0.875rem;
+        font-weight: 700;
+        font-size: 0.875rem;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .btn-outline-premium:hover {
+        border-color: #2563eb;
+        background: rgba(37, 99, 235, 0.05);
+        color: #2563eb;
+        transform: translateY(-2px);
+    }
+
+    .reveal {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .reveal.active {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+
+    ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+</style>
+@endpush
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const reveals = document.querySelectorAll('.reveal');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -20px 0px' });
+        reveals.forEach(el => observer.observe(el));
+    });
+</script>
+@endpush
 @endsection

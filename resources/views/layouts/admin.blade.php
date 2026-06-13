@@ -67,6 +67,18 @@
             transform: translateY(-3px);
             box-shadow: 0 24px 50px -26px rgba(15, 23, 42, 0.15);
         }
+        /* Reveal animation helpers */
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease-out;
+        }
+        .reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
     </style>
     @stack('styles')
 </head>
