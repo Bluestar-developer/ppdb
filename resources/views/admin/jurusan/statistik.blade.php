@@ -42,8 +42,8 @@
                     <span>Persentase peminat</span>
                     <span class="font-medium text-blue-600">{{ round($percent) }}%</span>
                 </div>
-                <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden shadow-inner">
-                    <div class="bg-gradient-to-r from-blue-500 to-indigo-600 h-3 rounded-full transition-all duration-700 ease-out shadow-md" style="width: {{ min($percent,100) }}%"></div>
+                    <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden shadow-inner">
+                    <div class="bg-gradient-to-r from-blue-500 to-indigo-600 h-3 rounded-full transition-all duration-700 ease-out shadow-md" data-width="{{ min($percent,100) }}"></div>
                 </div>
             </div>
 
@@ -63,5 +63,16 @@
         <p class="text-gray-400">Belum ada data jurusan atau pendaftar.</p>
     </div>
     @endif
+
+    @push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('[data-width]').forEach(el => {
+                const v = el.getAttribute('data-width');
+                if (v !== null) el.style.width = v + '%';
+            });
+        });
+    </script>
+    @endpush
 </div>
 @endsection

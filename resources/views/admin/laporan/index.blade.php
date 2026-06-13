@@ -141,7 +141,7 @@
                             @php $percent = ($js->kuota > 0) ? ($js->registrations_count / $js->kuota) * 100 : 0; @endphp
                             <div class="flex items-center gap-3">
                                 <div class="flex-1 bg-gray-200 rounded-full h-2.5 shadow-inner">
-                                    <div class="bg-gradient-to-r from-blue-500 to-indigo-600 h-2.5 rounded-full transition-all" style="width: {{ min($percent,100) }}%"></div>
+                                    <div class="bg-gradient-to-r from-blue-500 to-indigo-600 h-2.5 rounded-full transition-all" data-width="{{ min($percent,100) }}"></div>
                                 </div>
                                 <span class="text-xs font-medium text-gray-700 w-12">{{ round($percent) }}%</span>
                             </div>
@@ -210,4 +210,15 @@
         @endif
     </div>
 </div>
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('[data-width]').forEach(el => {
+            const v = el.getAttribute('data-width');
+            if (v !== null) el.style.width = v + '%';
+        });
+    });
+</script>
+@endpush
+
 @endsection

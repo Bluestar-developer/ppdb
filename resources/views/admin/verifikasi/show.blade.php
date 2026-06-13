@@ -127,7 +127,7 @@
                     </div>
                     <div class="w-full bg-gray-100 rounded-full h-2.5">
                         <div class="bg-gradient-to-r from-indigo-500 to-purple-500 h-2.5 rounded-full transition-all duration-500"
-                             style="width: {{ (collect(['ijazah', 'rapor', 'kk', 'foto'])->filter(fn($f) => $registration->$f)->count() / 4) * 100 }}%"></div>
+                             data-width="{{ (collect(['ijazah', 'rapor', 'kk', 'foto'])->filter(fn($f) => $registration->$f)->count() / 4) * 100 }}"></div>
                     </div>
                 </div>
             </div>
@@ -346,3 +346,14 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('[data-width]').forEach(el => {
+            const v = el.getAttribute('data-width');
+            if (v !== null) el.style.width = v + '%';
+        });
+    });
+</script>
+@endpush
