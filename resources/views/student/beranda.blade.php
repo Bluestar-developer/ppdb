@@ -141,24 +141,77 @@
             </div>
         </div>
 
-        <!-- Galeri Card -->
-        <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
-            <div class="flex items-center gap-3 border-b border-gray-100 pb-3 mb-4">
-                <div class="p-2 bg-pink-100 rounded-xl">
-                    <i class="fas fa-images text-pink-600 text-lg"></i>
-                </div>
-                <h2 class="text-2xl font-bold text-gray-800">Galeri Sekolah</h2>
+        <!-- Galeri Section (Pure Images Only) -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-5">
+            @forelse($galeri as $g)
+            <div class="rounded-xl overflow-hidden shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer group" onclick="openGalleryModal('{{ Storage::url($g->gambar) }}')">
+                <img src="{{ Storage::url($g->gambar) }}" class="h-40 w-full object-cover group-hover:scale-105 transition duration-500">
             </div>
-            <div class="grid grid-cols-2 sm:grid-cols-3 gap-5">
-                @forelse($galeri as $g)
-                <div class="rounded-xl overflow-hidden shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-                    <img src="{{ Storage::url($g->gambar) }}" class="h-32 w-full object-cover hover:scale-105 transition duration-500">
-                </div>
-                @empty
-                <p class="text-gray-400 col-span-3 text-center py-6">Belum ada foto galeri</p>
-                @endforelse
-            </div>
+            @empty
+            <p class="text-gray-400 col-span-3 text-center py-6">Belum ada foto galeri</p>
+            @endforelse
         </div>
     </div>
 </div>
+
+<!-- Gallery Modal -->
+<div id="galleryModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 p-4">
+    <div class="relative w-full h-full max-h-screen flex items-center justify-center">
+        <!-- Close Button -->
+        <button onclick="closeGalleryModal()" class="absolute top-4 right-4 z-50 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-lg transition shadow-lg">
+            <i class="fas fa-times text-xl"></i>
+        </button>
+        
+        <!-- Image Container -->
+        <div class="flex items-center justify-center w-full h-full">
+            <img id="modalImage" src="" class="max-h-[90vh] max-w-[95vw] rounded-xl object-contain transform transition-all duration-500" style="animation: zoomIn 0.5s ease-out;">
+        </div>
+    </div>
+</div>
+
+<!-- CSS untuk animasi zoom -->
+<style>
+    @keyframes zoomIn {
+        from {
+            opacity: 0;
+            transform: scale(0.7);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+</style>
+
+<script>
+function openGalleryModal(imageSrc) {
+    const modal = document.getElementById('galleryModal');
+    const modalImage = document.getElementById('modalImage');
+    
+    modalImage.src = imageSrc;
+    modal.classList.remove('hidden');
+}
+
+function closeGalleryModal() {
+    const modal = document.getElementById('galleryModal');
+    modal.classList.add('hidden');
+}
+
+// Close modal when clicking outside
+document.addEventListener('DOMContentLoaded', function() {
+    const galleryModal = document.getElementById('galleryModal');
+    galleryModal.addEventListener('click', function(e) {
+        if(e.target === galleryModal) {
+            closeGalleryModal();
+        }
+    });
+    
+    // Close dengan ESC key
+    document.addEventListener('keydown', function(e) {
+        if(e.key === 'Escape' && !galleryModal.classList.contains('hidden')) {
+            closeGalleryModal();
+        }
+    });
+});
+</script>
 @endsection

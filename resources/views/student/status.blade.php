@@ -6,15 +6,15 @@
 <div class="bg-gradient-to-br from-gray-50 via-white to-blue-50 min-h-screen py-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         <!-- Header 3D -->
-        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-700 p-6 text-white shadow-xl transition-all duration-300 hover:shadow-2xl">
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-700 p-8 text-white shadow-2xl transition-all duration-500 hover:shadow-3d hover:scale-[1.01]">
             <div class="relative z-10">
-                <h2 class="text-2xl md:text-3xl font-bold flex items-center gap-2">
+                <h2 class="text-3xl md:text-4xl font-bold flex items-center gap-2">
                     <i class="fas fa-chart-line"></i> Status Pendaftaran Anda
                 </h2>
-                <p class="text-blue-100 mt-2">SMK ICB Cinta Teknika – Pantau perkembangan pendaftaranmu</p>
+                <p class="text-blue-100 mt-2 text-lg">SMK ICB Cinta Teknika – Pantau perkembangan pendaftaranmu</p>
             </div>
-            <div class="absolute bottom-0 right-0 opacity-10">
-                <i class="fas fa-clipboard-list text-7xl"></i>
+            <div class="absolute -bottom-10 -right-10 opacity-10">
+                <i class="fas fa-clipboard-list text-9xl"></i>
             </div>
         </div>
 
@@ -33,7 +33,7 @@
         @if($registration)
             <div class="grid md:grid-cols-2 gap-8">
                 <!-- Status Pendaftaran Card 3D -->
-                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 hover:border-blue-200">
+                <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
                     <div class="flex items-center gap-3 border-b border-gray-100 pb-3 mb-4">
                         <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-md">
                             <i class="fas fa-id-card text-white text-sm"></i>
@@ -77,7 +77,7 @@
                 </div>
 
                 <!-- Kelengkapan Berkas Card 3D -->
-                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 hover:border-blue-200">
+                <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
                     <div class="flex items-center gap-3 border-b border-gray-100 pb-3 mb-4">
                         <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-teal-600 rounded-xl flex items-center justify-center shadow-md">
                             <i class="fas fa-folder-open text-white text-sm"></i>
@@ -126,7 +126,7 @@
             @endphp
 
             @if(!$payment || $payment->transaction_status != 'success')
-                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 hover:border-yellow-200">
+                <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
                     <div class="flex items-center gap-3 mb-3">
                         <div class="w-10 h-10 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-xl flex items-center justify-center shadow-md">
                             <i class="fas fa-credit-card text-white text-sm"></i>
@@ -144,7 +144,7 @@
                     </div>
                 </div>
             @else
-                <div class="bg-white rounded-2xl shadow-lg border border-green-200 p-6 transition-all duration-300 hover:shadow-2xl">
+                <div class="bg-white rounded-2xl shadow-xl border border-green-100 p-6 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-md">
                             <i class="fas fa-check-circle text-white text-sm"></i>

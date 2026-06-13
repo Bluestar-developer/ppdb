@@ -11,6 +11,7 @@
         /** @var int $totalPendaftar */
         /** @var int $totalDiterima */
         /** @var int $totalDitolak */
+        /** @var \Illuminate\Database\Eloquent\Collection|\App\Models\Registration[] $pendaftarTerbaru */
 
         $labels = $months ?? ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'];
         $totalData = $counts ?? array_fill(0, 12, 0);
@@ -19,6 +20,7 @@
         $totalPendaftar = $totalPendaftar ?? 0;
         $totalDiterima = $totalDiterima ?? 0;
         $totalDitolak = $totalDitolak ?? 0;
+        $pendaftarTerbaru = $pendaftarTerbaru ?? collect();
     @endphp
     <div class="min-h-screen bg-[#f8fafc] relative overflow-hidden">
 
@@ -219,7 +221,7 @@
                             </div>
                             <div>
                                 <h3 class="text-base font-bold text-gray-900">Pendaftar Terbaru</h3>
-                                <p class="text-xs text-gray-500">{{ count($pendaftarTerbaru ?? []) }} pendaftar terakhir</p>
+                                <p class="text-xs text-gray-500">{{ count($pendaftarTerbaru) }} pendaftar terakhir</p>
                             </div>
                         </div>
                         <a href="{{ route('admin.pendaftar.index') }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-50 hover:bg-blue-50 text-sm font-semibold text-gray-600 hover:text-blue-600 transition-all duration-300 group">
@@ -240,7 +242,8 @@
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-50">
-                                @forelse($pendaftarTerbaru ?? [] as $p)
+                                @forelse($pendaftarTerbaru as $p)
+                                    @php /** @var \App\Models\Registration $p */ @endphp
                                     <tr class="group hover:bg-blue-50/30 transition-all duration-200">
                                         <td class="px-6 py-3.5">
                                             <div class="flex items-center gap-2">
@@ -305,9 +308,9 @@
                         </table>
                     </div>
 
-                    @if(count($pendaftarTerbaru ?? []) > 0)
+                    @if(count($pendaftarTerbaru) > 0)
                         <div class="px-6 py-3 border-t border-gray-50 bg-gray-50/30 flex justify-between items-center">
-                            <span class="text-xs text-gray-500">Menampilkan {{ count($pendaftarTerbaru ?? []) }} data terbaru</span>
+                            <span class="text-xs text-gray-500">Menampilkan {{ count($pendaftarTerbaru) }} data terbaru</span>
                             <div class="flex gap-1">
                                 <button class="w-7 h-7 rounded-lg bg-white border border-gray-200 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:border-gray-300 transition text-xs">
                                     <i class="fas fa-chevron-left"></i>

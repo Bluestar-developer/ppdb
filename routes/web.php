@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     $jurusan = \App\Models\Jurusan::where('is_active', true)->get();
-    $galeri = \App\Models\Galeri::latest()->take(8)->get();
+    $galeri = \App\Models\Galeri::latest()->take(10)->get();
     $pengaturan = \App\Models\Pengaturan::pluck('value', 'key');
     $jadwal = \App\Models\JadwalPPDB::oldest()->get();
     $pengumuman = \App\Models\Pengumuman::where('is_published', true)->latest('published_at')->take(5)->get();
