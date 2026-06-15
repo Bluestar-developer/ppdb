@@ -50,11 +50,12 @@
                         <a href="{{ route('student.status') }}" class="px-4 py-2 text-sm font-semibold {{ request()->routeIs('student.status') ? 'text-blue-600 bg-blue-50/50' : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50/50' }} rounded-lg transition-all">Status</a>
                         <a href="{{ route('student.pengumuman') }}" class="px-4 py-2 text-sm font-semibold {{ request()->routeIs('student.pengumuman') ? 'text-blue-600 bg-blue-50/50' : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50/50' }} rounded-lg transition-all">Pengumuman</a>
                         
+                        @auth
                         <!-- Profile Dropdown (Click to toggle) -->
                         <div class="ml-4 relative" id="profileDropdown">
                             <button id="profileToggle" class="flex items-center gap-2.5 px-3.5 py-2 rounded-lg hover:bg-gray-100 transition-all duration-200 border border-gray-200 hover:border-blue-300">
                                 <div class="w-7 h-7 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-xs shadow-md">
-                                    {{ substr(Auth::user()->name, 0, 1) }}
+                                    {{ strtoupper(substr(Auth::user()->name ?? '', 0, 1)) }}
                                 </div>
                                 <span class="text-sm font-semibold text-gray-700 hidden lg:inline">{{ Auth::user()->name }}</span>
                                 <i class="fas fa-chevron-down text-xs text-gray-600"></i>
@@ -98,6 +99,9 @@
                                 </div>
                             </div>
                         </div>
+                        @else
+                            <a href="{{ route('login') }}" class="px-4 py-2 text-sm font-semibold text-gray-600 hover:text-blue-600 rounded-lg hover:bg-blue-50/50 transition-all">Login</a>
+                        @endauth
                     @else
                         <!-- Default Navigation -->
                         <a href="{{ url('/') }}" class="px-4 py-2 text-sm font-semibold text-gray-600 hover:text-blue-600 rounded-lg hover:bg-blue-50/50 transition-all">Beranda</a>

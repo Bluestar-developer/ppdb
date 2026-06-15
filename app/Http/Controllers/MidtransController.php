@@ -12,8 +12,8 @@ class MidtransController extends Controller
     public function notificationHandler(Request $request)
     {
         // Set konfigurasi
-        Config::$serverKey = env('MIDTRANS_SERVER_KEY');
-        Config::$isProduction = env('MIDTRANS_IS_PRODUCTION', false);
+        Config::$serverKey = config('midtrans.server_key');
+        Config::$isProduction = config('midtrans.is_production', false);
         Config::$isSanitized = true;
         Config::$is3ds = true;
 
@@ -71,7 +71,7 @@ class MidtransController extends Controller
         return response()->json(['message' => 'OK']);
     }
 
-    private function updateRegistrationStatus($payment)
+    private function updateRegistrationStatus(\App\Models\Payment $payment)
     {
         $registration = $payment->registration;
         if ($registration && $registration->status != 'approved') {

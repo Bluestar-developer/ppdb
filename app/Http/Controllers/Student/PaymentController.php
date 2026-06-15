@@ -15,8 +15,8 @@ class PaymentController extends Controller
 {
     public function __construct()
     {
-        Config::$serverKey = env('MIDTRANS_SERVER_KEY');
-        Config::$isProduction = env('MIDTRANS_IS_PRODUCTION', false);
+        Config::$serverKey = config('midtrans.server_key');
+        Config::$isProduction = config('midtrans.is_production', false);
         Config::$isSanitized = true;
         Config::$is3ds = true;
     }
@@ -84,6 +84,10 @@ class PaymentController extends Controller
         try {
             // Ambil status order dari Midtrans
             $midtransStatus = Transaction::status($payment->order_id);
+            // Ensure we treat the response as an object for static analysis and runtime
+            if (is_array($midtransStatus)) {
+                $midtransStatus = (object) $midtransStatus;
+            }
             $transactionStatus = $midtransStatus->transaction_status;
 
             // Update database sesuai status terbaru

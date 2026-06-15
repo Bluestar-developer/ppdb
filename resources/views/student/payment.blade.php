@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Pembayaran PPDB</title>
-    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}"></script>
+    <script src="{{ config('midtrans.is_production') ? 'https://app.midtrans.com/snap/snap.js' : 'https://app.sandbox.midtrans.com/snap/snap.js' }}" data-client-key="{{ config('midtrans.client_key') }}"></script>
 </head>
 <body>
     <div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">
